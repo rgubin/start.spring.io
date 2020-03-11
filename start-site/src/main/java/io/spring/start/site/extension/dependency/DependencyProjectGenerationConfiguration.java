@@ -33,6 +33,7 @@ import io.spring.start.site.extension.dependency.springkafka.SpringKafkaBuildCus
 import io.spring.start.site.extension.dependency.springsecurity.SpringSecurityRSocketBuildCustomizer;
 import io.spring.start.site.extension.dependency.springsecurity.SpringSecurityTestBuildCustomizer;
 import io.spring.start.site.extension.dependency.springsession.SpringSessionBuildCustomizer;
+import io.spring.start.site.extension.dependency.swagger.SwaggerAnnotationCustomizer;
 
 import org.springframework.context.annotation.Bean;
 
@@ -109,6 +110,12 @@ public class DependencyProjectGenerationConfiguration {
 	@ConditionalOnRequestedDependency("liquibase")
 	public LiquibaseProjectContributor liquibaseProjectContributor() {
 		return new LiquibaseProjectContributor();
+	}
+
+	@Bean
+	@ConditionalOnRequestedDependency("swagger2")
+	public SwaggerAnnotationCustomizer swaggerAnnotationCustomizer() {
+		return new SwaggerAnnotationCustomizer();
 	}
 
 }

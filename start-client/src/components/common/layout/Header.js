@@ -9,7 +9,7 @@ const Header = ({ children }) => (
       <a href='/'>
         <Logo />
         <span className='title'>
-          Spring <strong>Initializr</strong>
+          RealPage <strong>KickStarter</strong>
         </span>
         <span className='description'>Bootstrap your application</span>
       </a>

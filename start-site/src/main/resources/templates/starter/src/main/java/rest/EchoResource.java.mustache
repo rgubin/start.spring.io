@@ -1,0 +1,72 @@
+package {{packageName}}.rest;
+
+{{#useSwagger2}}
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+{{/useSwagger2}}
+{{#useLogging}}
+import lombok.extern.slf4j.Slf4j;
+{{/useLogging}}
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+{{#useLogging}}
+@Slf4j
+{{/useLogging}}
+@RestController
+@RequestMapping(
+        value = "/rest/v0/echo")
+{{#useSwagger2}}
+@Api(
+        value = "/rest/v0/echo",
+        description = "Java SpringBoot Kick Starter API - echo resource")
+{{/useSwagger2}}
+public class EchoResource {
+
+    @GetMapping(
+            produces = MediaType.TEXT_PLAIN_VALUE)
+{{#useSwagger2}}
+    @ApiOperation(
+            value = "Echo",
+            notes = "Just prints back \"ok\"",
+            response = String.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Request success"),
+            @ApiResponse(code = 500, message = "Server error")
+    })
+{{/useSwagger2}}
+    public ResponseEntity<String> getEcho() {
+{{#useLogging}}
+        log.debug("Got into the getEcho()");
+{{/useLogging}}
+        return new ResponseEntity<>("ok", HttpStatus.OK);
+    }
+
+    @PutMapping(
+            produces = MediaType.TEXT_PLAIN_VALUE)
+{{#useSwagger2}}
+    @ApiOperation(
+            value = "Echo",
+            notes = "Print back request string",
+            response = String.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Request success"),
+            @ApiResponse(code = 500, message = "Server error")
+    })
+{{/useSwagger2}}
+    public ResponseEntity<String> putEcho({{#useSwagger2}}@ApiParam{{/useSwagger2}} @RequestBody String payload) {
+{{#useLogging}}
+        log.debug("Got into the putEcho()");
+{{/useLogging}}
+        return new ResponseEntity<>(payload, HttpStatus.OK);
+    }
+}

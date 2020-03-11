@@ -57,23 +57,25 @@ export default function Application() {
 
   const inputMore = useRef(null)
   const inputQuickSearch = useRef(null)
+  //const apiURL = `http://10.0.10.4:9090`;
 
   const windowsUtils = useWindowsUtils()
+  const apiURL = windowsUtils.origin
   useHash()
 
   useEffect(() => {
-    if (windowsUtils.origin) {
-      const url = `${windowsUtils.origin}/metadata/client`
+    //if (windowsUtils.origin) {
+    const url = `${apiURL}/metadata/client`
       getInfo(url).then(jsonConfig => {
         const response = getConfig(jsonConfig)
         dispatchInitializr({ type: 'COMPLETE', payload: { ...response } })
         dispatch({ type: 'COMPLETE', payload: response })
       })
-    }
+    //}
   }, [dispatch, dispatchInitializr, windowsUtils.origin])
 
   const onSubmit = async () => {
-    const url = `${windowsUtils.origin}/starter.zip`
+    const url = `${apiURL}/starter.zip`
     const project = await getProject(
       url,
       values,
@@ -81,11 +83,11 @@ export default function Application() {
     ).catch(() => {
       toast.error(`Could not connect to server. Please check your network.`)
     })
-    FileSaver.saveAs(project, `${get(values, 'meta.artifact')}.zip`)
+    FileSaver.saveAs(project, `${get(values, 'meta.artifact')}.custom.zip`)
   }
 
   const onExplore = async () => {
-    const url = `${windowsUtils.origin}/starter.zip`
+    const url = `${apiURL}/starter.zip`
     dispatch({ type: 'EXPLORE_UPDATE', payload: { open: true } })
     const project = await getProject(
       url,
