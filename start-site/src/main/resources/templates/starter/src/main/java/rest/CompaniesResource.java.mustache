@@ -1,0 +1,38 @@
+package {{packageName}}.rest;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+
+@RestController
+@RequestMapping(
+        value = "/rest/v0/companies")
+@Api(
+        value = ""/rest/v0/companies",
+        description = "Kick Starter API - companies demo resource")
+public class CompaniesResource {
+
+    @GetMapping(
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    @ApiOperation(
+            value = "Get companies",
+            notes = "Gets a list of all companies.",
+            response = String.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "The companies retrieved successfully"),
+            @ApiResponse(code = 401, message = "The user is not authorized to perform the operation"),
+            @ApiResponse(code = 403, message = "The user has no access to perform the operation")
+    })
+    public List<> getCompanies() {
+        return new ArrayList<>();
+    }
+}

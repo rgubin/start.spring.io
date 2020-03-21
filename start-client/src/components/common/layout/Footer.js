@@ -9,7 +9,7 @@ const Footer = ({ children }) => (
           <div className='footer-container'>
             © 2013-{new Date().getFullYear()} VMware, Inc.
             <br />
-            start.spring.io is powered by
+            Is powered by
             <br />
             <span>
               <a

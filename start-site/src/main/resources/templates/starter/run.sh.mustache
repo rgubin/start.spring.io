@@ -1,0 +1,4 @@
+#!/bin/sh
+
+./mvnw package
+docker run -p 8080:8080 realpage/{{name}}

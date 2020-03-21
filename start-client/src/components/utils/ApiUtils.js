@@ -24,7 +24,9 @@ export const getInfo = function getInfo(url) {
     fetch(`${url}`, {
       method: 'GET',
       headers: {
-        Accept: 'application/vnd.initializr.v2.1+json',
+        'Accept': 'application/vnd.initializr.v2.1+json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*'
       },
     })
       .then(

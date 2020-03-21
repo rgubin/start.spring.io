@@ -18,9 +18,11 @@ package io.spring.start.site.extension.build.maven;
 
 import io.spring.initializr.generator.buildsystem.maven.MavenBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
+import io.spring.initializr.generator.condition.ConditionalOnPackaging;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 
+import io.spring.start.site.packaging.docker.DockerPackaging;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -37,4 +39,9 @@ class MavenProjectGenerationConfiguration {
 		return new MavenBuildSystemHelpDocumentCustomizer(description);
 	}
 
+	@Bean
+	@ConditionalOnPackaging(DockerPackaging.ID)
+	public MavenDockerBuildCustomizer mavenDockerBuildCustomizer() {
+		return new MavenDockerBuildCustomizer();
+	}
 }
