@@ -112,10 +112,10 @@ public class DependencyProjectGenerationConfiguration {
 		return new LiquibaseProjectContributor();
 	}
 
-	@Bean
+/*	@Bean
 	@ConditionalOnRequestedDependency("swagger2")
 	public SwaggerAnnotationCustomizer swaggerAnnotationCustomizer() {
 		return new SwaggerAnnotationCustomizer();
-	}
+	}*/
 
 }

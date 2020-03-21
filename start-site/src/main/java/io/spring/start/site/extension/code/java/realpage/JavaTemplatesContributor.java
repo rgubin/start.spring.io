@@ -19,7 +19,9 @@ package io.spring.start.site.extension.code.java.realpage;
 import io.spring.initializr.generator.io.template.TemplateRenderer;
 import io.spring.initializr.generator.language.SourceStructure;
 import io.spring.initializr.generator.project.ProjectDescription;
+import io.spring.initializr.generator.project.contributor.MultipleResourcesProjectContributor;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
+import io.spring.initializr.generator.project.contributor.SingleResourceProjectContributor;
 import io.spring.start.site.packaging.docker.DockerPackaging;
 import org.springframework.util.StreamUtils;
 
@@ -63,11 +65,41 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		Map<String, Object> model = resolveModel();
 
         if (Boolean.TRUE.equals(model.get("useSpringWeb"))) {
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".rest", "EchoResource").toString()),
-                    "starter/src/main/java/rest/EchoResource.java", model);
+            write(new File(mainSource.createSourceFile(model.get("packageName") + ".controller", "EchoResource").toString()),
+                    "starter/src/main/java/controller/EchoResource.java", model);
         }
-        write(new File(mainSource.createResourceFile("", "logback-spring.xml").toString()),
+        if (Boolean.TRUE.equals(model.get("useSwagger2"))) {
+            write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SwaggerConfig").toString()),
+                    "starter/src/main/java/configuration/SwaggerConfig.java", model);
+            write(new File(mainSource.createSourceFile(model.get("packageName") + ".controller", "HomeController").toString()),
+                    "starter/src/main/java/controller/HomeController.java", model);
+        }
+        if (Boolean.TRUE.equals(model.get("useSecurity")) && Boolean.TRUE.equals(model.get("useJwt"))) {
+            write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SecurityConfig").toString()),
+                    "starter/src/main/java/configuration/SecurityConfig.java", model);
+            write(new File(mainSource.createSourceFile(model.get("packageName") + ".security", "JwtConfigurer").toString()),
+                    "starter/src/main/java/security/JwtConfigurer.java", model);
+            write(new File(mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenFilter").toString()),
+                    "starter/src/main/java/security/JwtTokenFilter.java", model);
+            write(new File(mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenProvider").toString()),
+                    "starter/src/main/java/security/JwtTokenProvider.java", model);
+        }
+		//MultipleResourcesProjectContributor multipleResourcesProjectContributor = new MultipleResourcesProjectContributor("classpath:configuration/");
+		//multipleResourcesProjectContributor.contribute(projectRoot);
+		SingleResourceProjectContributor contributor = new SingleResourceProjectContributor("src/main/resources/keystore.p12", "classpath:configuration/keystore.p12");
+		contributor.contribute(projectRoot);
+
+		SingleResourceProjectContributor contributorStatic = new SingleResourceProjectContributor("src/main/resources/static/oauth2-redirect.html", "classpath:configuration/oauth2-redirect.html");
+		contributorStatic.contribute(projectRoot);
+
+/*
+		SingleResourceProjectContributor contributorProp = new SingleResourceProjectContributor("src/main/resources/application.properties", "classpath:configuration/application.properties");
+		contributorProp.contribute(projectRoot);
+*/
+
+		write(new File(mainSource.createResourceFile("", "logback-spring.xml").toString()),
                 "starter/src/main/resources/logback-spring.xml", model);
+
         if (DockerPackaging.ID.equals(description.getPackaging().id())) {
 			write(new File(projectRoot.toString(), "Dockerfile"),
 					"starter/Dockerfile", model);
@@ -86,6 +118,8 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		model.put("applicationName", description.getApplicationName());
         model.put("useSwagger2", description.getRequestedDependencies().containsKey("swagger2"));
         model.put("useSpringWeb", description.getRequestedDependencies().containsKey("web"));
+        model.put("useSecurity", description.getRequestedDependencies().containsKey("security"));
+        model.put("useJwt", description.getRequestedDependencies().containsKey("java-jwt"));
         model.put("useLogging", description.getRequestedDependencies().containsKey("lombok"));
 		return model;
 	}
