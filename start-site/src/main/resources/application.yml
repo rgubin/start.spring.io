@@ -30,7 +30,7 @@ initializr:
           id: swagger2
           groupId: io.springfox
           artifactId: springfox-swagger2
-          version: 2.6.0
+          version: 2.9.2
           description: JSON API documentation for spring based applications.
           starter: false
           links:
@@ -41,7 +41,7 @@ initializr:
           id: swagger-ui
           groupId: io.springfox
           artifactId: springfox-swagger-ui
-          version: 2.6.0
+          version: 2.9.2
           description: Swagger Web UI for JSON API documentation for spring based applications
           starter: false
         - name: Lombok
@@ -50,6 +50,13 @@ initializr:
           artifactId: lombok
           scope: annotationProcessor
           description: Java annotation library which helps to reduce boilerplate code.
+          starter: false
+        - name: Java-Jwt
+          id: java-jwt
+          groupId: com.auth0
+          artifactId: java-jwt
+          version: 3.10.1
+          description: Java jwt library.
           starter: false
     - name: Web
       content:
@@ -71,6 +78,34 @@ initializr:
             - rel: guide
               href: https://spring.io/guides/tutorials/bookmarks/
               description: Building REST services with Spring
+    - name: Ops
+      content:
+        - name: Spring Boot Actuator
+          id: actuator
+          description: Supports built in (or custom) endpoints that let you monitor and manage your application - such as application health, metrics, sessions, etc.
+          links:
+            - rel: guide
+              href: https://spring.io/guides/gs/actuator-service/
+              description: Building a RESTful Web Service with Spring Boot Actuator
+            - rel: reference
+              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#production-ready
+    - name: Security
+      content:
+        - name: Spring Security
+          id: security
+          description: Highly customizable authentication and access-control framework for Spring applications.
+          links:
+            - rel: guide
+              href: https://spring.io/guides/gs/securing-web/
+              description: Securing a Web Application
+            - rel: guide
+              href: https://spring.io/guides/tutorials/spring-boot-oauth2/
+              description: Spring Boot and OAuth2
+            - rel: guide
+              href: https://spring.io/guides/gs/authenticating-ldap/
+              description: Authenticating a User with LDAP
+            - rel: reference
+              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-security
     - name: SQL
       content:
         - name: Liquibase Migration

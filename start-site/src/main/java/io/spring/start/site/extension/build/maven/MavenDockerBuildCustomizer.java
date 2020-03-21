@@ -38,7 +38,7 @@ public class MavenDockerBuildCustomizer implements BuildCustomizer<MavenBuild> {
             dockerPlugin.execution("package", execution -> execution.goal("build").goal("tag").phase("package"));
             dockerPlugin.execution("deploy", execution -> execution.goal("push").phase("deploy"));
             String jarFile = "target/${project.artifactId}-${project.version}.jar";
-            dockerPlugin.configuration(config -> config.add("repository", "realpage/${project.artifactId}"));
+            dockerPlugin.configuration(config -> config.add("repository", "${project.artifactId}"));
             dockerPlugin.configuration(config -> config.add("tag", "${project.version}"));
             dockerPlugin.configuration(config ->
                     config.configure("buildArgs", args -> args.add("JAR_FILE", jarFile)));

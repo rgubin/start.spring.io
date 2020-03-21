@@ -7,6 +7,7 @@ io.spring.start.site.extension.dependency.springdata.SpringDataProjectGeneration
 io.spring.start.site.extension.dependency.springintegration.SpringIntegrationProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.springrestdocs.SpringRestDocsProjectGenerationConfiguration,\
 io.spring.start.site.extension.description.DescriptionProjectGenerationConfiguration,\
+io.spring.start.site.configuration.ApplicationConfigurationProjectGenerationConfiguration, \
 io.spring.start.site.extension.code.java.realpage.JavaSourceCodeGenerationConfiguration
 io.spring.initializr.generator.packaging.PackagingFactory=\
 io.spring.start.site.packaging.docker.DockerPackagingFactory
