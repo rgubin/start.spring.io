@@ -1,0 +1,9 @@
+Set JAVA_HOME to JDK1.8
+Make sure .git directory exists
+
+[indent=0]
+----
+.\mvnw.cmd clean install -DskipTests=true
+cd start-site
+..\mvnw.cmd spring-boot:run
+----

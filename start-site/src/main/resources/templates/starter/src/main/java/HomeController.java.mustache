@@ -1,4 +1,4 @@
-package {{packageName}}.controller;
+package {{packageName}};
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-	@Value("${oauth2RedirectUrl:-}")
+	@Value("${oauth2.redirect.url:-}")
 	private String oauth2RedirectUrl;
 
 	@GetMapping(path = "/", produces = MediaType.TEXT_HTML_VALUE)

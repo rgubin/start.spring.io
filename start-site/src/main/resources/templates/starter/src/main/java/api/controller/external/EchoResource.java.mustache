@@ -1,4 +1,4 @@
-package {{packageName}}.controller;
+package {{packageName}}.controller.external;
 
 {{#useSwagger2}}
 import {{packageName}}.configuration.SwaggerConfig;
@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 {{/useLogging}}
 @RestController
 @RequestMapping(
-        value = "/rest/v0/echo")
+        value = "/rest/v0/public/echo")
 {{#useSwagger2}}
 @Api(
-        value = "/rest/v0/echo",
+        value = "/rest/v0/public/echo",
         description = "Java SpringBoot Kick Starter API - echo resource")
 {{/useSwagger2}}
 public class EchoResource {
@@ -43,15 +43,6 @@ public class EchoResource {
 {{#useSwagger2}}
     @ApiOperation(
             value = "Echo",
-            authorizations = {
-                    @Authorization(value = SwaggerConfig.securitySchemaOAuth2,
-                            scopes = {
-                                    @AuthorizationScope(
-                                            scope = SwaggerConfig.authorizationScopeGlobal,
-                                            description = SwaggerConfig.authorizationScopeGlobalDesc)
-                            }
-                    )
-            },
             notes = "Just prints back \"ok\"",
             response = String.class)
     @ApiResponses({
@@ -59,9 +50,6 @@ public class EchoResource {
             @ApiResponse(code = 500, message = "Server error")
     })
 {{/useSwagger2}}
-{{#useSecurity}}
-    @Secured("ROLE_OAUTH2")
-{{/useSecurity}}
     public ResponseEntity<String> getEcho() {
 {{#useLogging}}
         log.debug("Got into the getEcho()");
