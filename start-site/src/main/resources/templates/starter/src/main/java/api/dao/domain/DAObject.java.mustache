@@ -1,0 +1,12 @@
+package {{packageName}}.api.dao.domain;
+
+public interface DAObject {
+    /**
+     * Common implementation is
+     * <p>
+     * visitor.visit(this);
+     *
+     * @param visitor this object
+     */
+    void accept(DAOVisitor visitor);
+}

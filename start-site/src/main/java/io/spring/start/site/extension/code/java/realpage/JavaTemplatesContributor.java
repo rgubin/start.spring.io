@@ -19,7 +19,6 @@ package io.spring.start.site.extension.code.java.realpage;
 import io.spring.initializr.generator.io.template.TemplateRenderer;
 import io.spring.initializr.generator.language.SourceStructure;
 import io.spring.initializr.generator.project.ProjectDescription;
-import io.spring.initializr.generator.project.contributor.MultipleResourcesProjectContributor;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.generator.project.contributor.SingleResourceProjectContributor;
 import io.spring.start.site.packaging.docker.DockerPackaging;
@@ -29,6 +28,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,15 +65,16 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		SourceStructure mainSource = description.getBuildSystem().getMainSource(projectRoot, description.getLanguage());
 		Map<String, Object> model = resolveModel();
 
-        if (Boolean.TRUE.equals(model.get("useSpringWeb"))) {
+/*        if (Boolean.TRUE.equals(model.get("useSpringWeb"))) {
             write(new File(mainSource.createSourceFile(model.get("packageName") + ".controller", "EchoResource").toString()),
                     "starter/src/main/java/controller/EchoResource.java", model);
         }
-        if (Boolean.TRUE.equals(model.get("useSwagger2"))) {
+ */
+		if (Boolean.TRUE.equals(model.get("useSwagger2"))) {
             write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SwaggerConfig").toString()),
                     "starter/src/main/java/configuration/SwaggerConfig.java", model);
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".controller", "HomeController").toString()),
-                    "starter/src/main/java/controller/HomeController.java", model);
+            write(new File(mainSource.createSourceFile(model.get("packageName").toString(), "HomeController").toString()),
+                    "starter/src/main/java/HomeController.java", model);
         }
         if (Boolean.TRUE.equals(model.get("useSecurity")) && Boolean.TRUE.equals(model.get("useJwt"))) {
             write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SecurityConfig").toString()),
@@ -84,18 +86,18 @@ public class JavaTemplatesContributor implements ProjectContributor {
             write(new File(mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenProvider").toString()),
                     "starter/src/main/java/security/JwtTokenProvider.java", model);
         }
-		//MultipleResourcesProjectContributor multipleResourcesProjectContributor = new MultipleResourcesProjectContributor("classpath:configuration/");
-		//multipleResourcesProjectContributor.contribute(projectRoot);
+		write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "ApplicationConfig").toString()),
+				"starter/src/main/java/configuration/ApplicationConfig.java", model);
+		try {
+			copyCommonSources("starter/src/main/java/api", mainSource, model);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		SingleResourceProjectContributor contributor = new SingleResourceProjectContributor("src/main/resources/keystore.p12", "classpath:configuration/keystore.p12");
 		contributor.contribute(projectRoot);
 
 		SingleResourceProjectContributor contributorStatic = new SingleResourceProjectContributor("src/main/resources/static/oauth2-redirect.html", "classpath:configuration/oauth2-redirect.html");
 		contributorStatic.contribute(projectRoot);
-
-/*
-		SingleResourceProjectContributor contributorProp = new SingleResourceProjectContributor("src/main/resources/application.properties", "classpath:configuration/application.properties");
-		contributorProp.contribute(projectRoot);
-*/
 
 		write(new File(mainSource.createResourceFile("", "logback-spring.xml").toString()),
                 "starter/src/main/resources/logback-spring.xml", model);
@@ -107,6 +109,24 @@ public class JavaTemplatesContributor implements ProjectContributor {
             Files.createFile(execFile.toPath());
             execFile.setExecutable(true);
             write(execFile,"starter/run.sh", model);
+		}
+	}
+
+	private void copyCommonSources(String prefix, SourceStructure mainSource, Map<String, Object> model) throws IOException, URISyntaxException {
+		for (URL u: ResourcesScanner.getResourceURLs()) {
+			String path = u.getFile();
+			if (path.endsWith(".mustache") && path.contains(prefix)) {
+				String[] split = path.split(prefix);
+				File f = new File(path);
+				String fullName = f.getName();
+				String tmpl = fullName.substring(0, fullName.indexOf('.'));
+				String last = split[1];
+				String packageNameSuffix = last.substring(0, last.lastIndexOf("/")).replaceAll("/", ".");
+				String packageName = model.get("packageName") + prefix.replaceAll("/", ".").replace("starter.src.main.java", "");
+				String lastName = last.replaceAll(".mustache", "");
+				write(new File(mainSource.createSourceFile(packageName + packageNameSuffix, tmpl).toString()),
+						prefix + lastName, model);
+			}
 		}
 	}
 

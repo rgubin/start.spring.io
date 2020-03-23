@@ -1,0 +1,83 @@
+package {{packageName}}.api.controller.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Objects;
+import java.util.UUID;
+
+@ApiModel("Company")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CompanyDto {
+    @ApiModelProperty(value = "Company Id", dataType = "java.Util.UUID")
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private UUID id;
+
+    @ApiModelProperty(value = "Company Name")
+    private String name;
+
+    @ApiModelProperty(value = "Company WebSite")
+    private String webSite;
+
+    @ApiModelProperty(value = "Company Type Description")
+    private String typeDescription;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getWebSite() {
+        return webSite;
+    }
+
+    public void setWebSite(String webSite) {
+        this.webSite = webSite;
+    }
+
+    public String getTypeDescription() {
+        return typeDescription;
+    }
+
+    public void setTypeDescription(String typeDescription) {
+        this.typeDescription = typeDescription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompanyDto that = (CompanyDto) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(webSite, that.webSite) &&
+                Objects.equals(typeDescription, that.typeDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, webSite, typeDescription);
+    }
+
+    @Override
+    public String toString() {
+        return "CompanyDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", webSite='" + webSite + '\'' +
+                ", typeDescription='" + typeDescription + '\'' +
+                '}';
+    }
+}

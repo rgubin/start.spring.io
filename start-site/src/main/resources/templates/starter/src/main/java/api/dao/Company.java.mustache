@@ -1,0 +1,50 @@
+package {{packageName}}.api.dao;
+
+import {{packageName}}.api.dao.domain.DAOVisitor;
+import {{packageName}}.api.dao.domain.DAObject;
+
+import java.util.UUID;
+
+public class Company implements DAObject {
+    private UUID id;
+    private String name;
+    private String webSite;
+    private String companyTypeDescription;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getWebSite() {
+        return webSite;
+    }
+
+    public void setWebSite(String webSite) {
+        this.webSite = webSite;
+    }
+
+    public String getCompanyTypeDescription() {
+        return companyTypeDescription;
+    }
+
+    public void setCompanyTypeDescription(String companyTypeDescription) {
+        this.companyTypeDescription = companyTypeDescription;
+    }
+
+    @Override
+    public void accept(DAOVisitor visitor) {
+        visitor.visit(this);
+    }
+}

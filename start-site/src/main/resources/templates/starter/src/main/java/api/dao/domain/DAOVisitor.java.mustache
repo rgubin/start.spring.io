@@ -1,0 +1,11 @@
+package {{packageName}}.api.dao.domain;
+
+import {{packageName}}.api.dao.Company;
+
+/**
+ * Any convertible object should be listed here as void visit(Object object) method.
+ * Implementation of visit method should be real conversion routine for every specific converter.
+ */
+public interface DAOVisitor {
+    void visit(Company company);
+}
