@@ -1,0 +1,3 @@
+INSERT INTO company (id, name, website, company_type, created, updated) VALUES ('1d51d608-bdf7-4a70-a0f0-f44c2fa92897', 'Company One', 'http://www.one.com', 1, current_timestamp, current_timestamp);
+INSERT INTO company (id, name, website, company_type, created, updated) VALUES ('f2d444b2-d4e9-4848-9720-446fe1367c57', 'Company Two', 'http://www.two.com', 1, current_timestamp, current_timestamp);
+INSERT INTO company (id, name, website, company_type, created, updated) VALUES ('028a4fd4-db13-4146-a73b-4038be81bd71', 'Company Three', 'http://www.three.com', 1, current_timestamp, current_timestamp);

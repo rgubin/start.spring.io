@@ -22,6 +22,22 @@ spring:
     execution:
       thread-name-prefix: initializr-
 
+custom:
+  initializr:
+    dependencies:
+      - name: Custom Dependencies
+        content:
+          - name: Swagger Annotations
+            id: swagger2
+            groupId: io.springfox
+            artifactId: springfox-swagger2
+            version: 2.9.2
+            description: JSON API documentation for spring based applications.
+            starter: false
+            links:
+              - rel: reference
+                href: https://springfox.github.io/springfox/docs/current/
+                description: Springfox Reference Documentation
 initializr:
   dependencies:
     - name: Developer Tools
@@ -108,6 +124,16 @@ initializr:
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-security
     - name: SQL
       content:
+        - name: Spring Data JDBC
+          id: data-jdbc
+          compatibilityRange: "2.1.0.RELEASE"
+          description: Persist data in SQL stores with plain JDBC using Spring Data.
+          links:
+            - rel: guide
+              href: https://github.com/spring-projects/spring-data-examples/tree/master/jdbc/basics
+              description: Using Spring Data JDBC
+            - rel: reference
+              href: https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/
         - name: Liquibase Migration
           id: liquibase
           description: Liquibase database migration and source control library.
@@ -126,10 +152,10 @@ initializr:
           starter: false
   types:
     - name: Maven Project
-      id: maven-project
+      id: maven-project2
       description: Generate a Maven based project archive
       tags:
-        build: maven
+        build: maven2
         format: project
       default: true
       action: /starter.zip

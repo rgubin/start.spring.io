@@ -16,14 +16,23 @@
 
 package io.spring.start.site.extension.build.maven;
 
-import io.spring.initializr.generator.buildsystem.maven.MavenBuildSystem;
+import io.spring.initializr.generator.buildsystem.BuildItemResolver;
 import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnPackaging;
+import io.spring.initializr.generator.io.IndentingWriterFactory;
+import io.spring.initializr.generator.packaging.war.WarPackaging;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
-
+import io.spring.initializr.generator.spring.build.BuildCustomizer;
+import io.spring.initializr.generator.spring.util.LambdaSafe;
+import io.spring.start.site.buildsystem.maven2.MavenBuild;
+import io.spring.start.site.buildsystem.maven2.MavenBuildSystem;
 import io.spring.start.site.packaging.docker.DockerPackaging;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * {@link ProjectGenerationConfiguration} for generation of projects that depend on Maven.
@@ -34,6 +43,12 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnBuildSystem(MavenBuildSystem.ID)
 class MavenProjectGenerationConfiguration {
 
+	private final ProjectDescription description;
+
+	public MavenProjectGenerationConfiguration(ProjectDescription description) {
+		this.description = description;
+	}
+
 	@Bean
 	MavenBuildSystemHelpDocumentCustomizer mavenBuildSystemHelpDocumentCustomizer(ProjectDescription description) {
 		return new MavenBuildSystemHelpDocumentCustomizer(description);
@@ -43,5 +58,38 @@ class MavenProjectGenerationConfiguration {
 	@ConditionalOnPackaging(DockerPackaging.ID)
 	public MavenDockerBuildCustomizer mavenDockerBuildCustomizer() {
 		return new MavenDockerBuildCustomizer();
+	}
+
+	@Bean
+	public MavenWrapperContributor mavenWrapperContributor() {
+		return new MavenWrapperContributor();
+	}
+
+	@Bean
+	public MavenBuild mavenBuild(ObjectProvider<BuildItemResolver> buildItemResolver,
+								 ObjectProvider<BuildCustomizer<?>> buildCustomizers) {
+		return createBuild(buildItemResolver.getIfAvailable(),
+				buildCustomizers.orderedStream().collect(Collectors.toList()));
+	}
+
+	@SuppressWarnings("unchecked")
+	private MavenBuild createBuild(BuildItemResolver buildItemResolver, List<BuildCustomizer<?>> buildCustomizers) {
+		MavenBuild build = (buildItemResolver != null) ? new MavenBuild(buildItemResolver) : new MavenBuild();
+		build.settings().name(description.getName());
+		LambdaSafe.callbacks(BuildCustomizer.class, buildCustomizers, build)
+				.invoke((customizer) -> customizer.customize(build));
+		return build;
+	}
+
+	@Bean
+	public MavenBuildProjectContributor mavenBuildProjectContributor(MavenBuild build,
+																	 IndentingWriterFactory indentingWriterFactory) {
+		return new MavenBuildProjectContributor(build, indentingWriterFactory);
+	}
+
+	@Bean
+	@ConditionalOnPackaging(WarPackaging.ID)
+	public BuildCustomizer<MavenBuild> mavenWarPackagingConfigurer() {
+		return (build) -> build.settings().packaging("war");
 	}
 }

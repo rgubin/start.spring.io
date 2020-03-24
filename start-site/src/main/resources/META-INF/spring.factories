@@ -1,3 +1,5 @@
+io.spring.initializr.generator.buildsystem.BuildSystemFactory=\
+io.spring.start.site.buildsystem.maven2.MavenBuildSystemFactory
 io.spring.initializr.generator.project.ProjectGenerationConfiguration=\
 io.spring.start.site.extension.build.maven.MavenProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.DependencyProjectGenerationConfiguration,\
@@ -7,7 +9,6 @@ io.spring.start.site.extension.dependency.springdata.SpringDataProjectGeneration
 io.spring.start.site.extension.dependency.springintegration.SpringIntegrationProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.springrestdocs.SpringRestDocsProjectGenerationConfiguration,\
 io.spring.start.site.extension.description.DescriptionProjectGenerationConfiguration,\
-io.spring.start.site.configuration.ApplicationConfigurationProjectGenerationConfiguration, \
 io.spring.start.site.extension.code.java.realpage.JavaSourceCodeGenerationConfiguration
 io.spring.initializr.generator.packaging.PackagingFactory=\
 io.spring.start.site.packaging.docker.DockerPackagingFactory
