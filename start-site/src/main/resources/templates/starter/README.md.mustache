@@ -2,18 +2,40 @@
 Starter kit for API in Java
 
 # Getting Started
+Invoke the build at the root of the project
+```
+$ ./mvnw clean package
+```
+This will compile application, run unit-tests and package application as a docker image.
+## Run application
+To run local stack run first postgres database in docker
+```
+$ ./mvnw -Ppg-docker docker:start
+```
+Then you may start application using your IDE or from command line:
+```
+$ ./mvnw spring-boot:run
+```
+Or all together in one line:
+```
+$ ./mvnw -Ppg-docker docker:start spring-boot:run
+```
 
-
-# Debug
-
+After than you can access application using URL https://localhost:44334
 
 # Run the tests
-
+To run unit tests type
+```
+$ ./mvnw test
+```
+To run all tests including integration tests type
+```
+$ ./mvnw verify
+```
 # Features
+{{#useActuator}}
+### Spring Boot Actuator
+Try visit http://localhost:8080/health
+{{/useActuator}}
 
-
-# Technologies used
-
-
-# Separation of concerns explanation
 
