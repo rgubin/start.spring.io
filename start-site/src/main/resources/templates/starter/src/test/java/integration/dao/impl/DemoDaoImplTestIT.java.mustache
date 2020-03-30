@@ -1,0 +1,21 @@
+package {{packageName}}.integration.dao.impl;
+
+import {{packageName}}.integration.dao.DAOTests;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class DemoDaoImplTestIT extends DAOTests {
+    @Test
+    public void simple_jdbc_test() {
+        List<Map<String, Object>> tables = this.getJdbcTemplate().queryForList("SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'");
+
+        tables.stream()
+                .map(e -> e.get("tablename"))
+                .forEach(System.out::println);
+        assertTrue(tables.size() > 2);
+    }
+}

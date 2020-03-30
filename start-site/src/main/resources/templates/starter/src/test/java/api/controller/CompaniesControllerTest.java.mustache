@@ -1,0 +1,52 @@
+package {{packageName}}.api.controller;
+
+
+import {{packageName}}.api.controller.dto.CompanyDto;
+import {{packageName}}.api.service.CompanyService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Collections;
+
+import static {{packageName}}.configuration.ApplicationConfig.API_VERSION_0;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+@ExtendWith(MockitoExtension.class)
+public class CompaniesControllerTest {
+    @InjectMocks
+    private CompaniesController controller;
+    @Mock
+    private CompanyService service;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    public void setUp() {
+        mvc = MockMvcBuilders.standaloneSetup((controller)).build();
+    }
+
+    @Test
+    public void get_companies_return_ok() throws Exception {
+        CompanyDto company = new CompanyDto();
+        when(service.getCompanyList()).thenReturn(Collections.singletonList(company));
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(API_VERSION_0 + "companies")
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+        assertNotNull(mvcResult);
+        verify(service).getCompanyList();
+        verifyNoMoreInteractions(service);
+    }
+}

@@ -65,11 +65,6 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		SourceStructure mainSource = description.getBuildSystem().getMainSource(projectRoot, description.getLanguage());
 		Map<String, Object> model = resolveModel();
 
-/*        if (Boolean.TRUE.equals(model.get("useSpringWeb"))) {
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".controller", "EchoResource").toString()),
-                    "starter/src/main/java/controller/EchoResource.java", model);
-        }
- */
 		if (Boolean.TRUE.equals(model.get("useSwagger2"))) {
             write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SwaggerConfig").toString()),
                     "starter/src/main/java/configuration/SwaggerConfig.java", model);
@@ -89,7 +84,8 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "ApplicationConfig").toString()),
 				"starter/src/main/java/configuration/ApplicationConfig.java", model);
 		try {
-			copyCommonSources("starter/src/main/java/api", mainSource, model);
+			copyCommonSources("starter/src/main/java/api", mainSource, model, "starter.src.main.java");
+			copyCommonSources("starter/src/test/java", description.getBuildSystem().getTestSource(projectRoot, description.getLanguage()), model, "starter.src.test.java");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -113,6 +109,9 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		write(new File(mainSource.createResourceFile("", "application.yml").toString()),
                 "starter/src/main/resources/application.yml", model);
 
+		write(new File(projectRoot.toString(), "README.md"),
+				"starter/README.md", model);
+
         if (DockerPackaging.ID.equals(description.getPackaging().id())) {
 			write(new File(projectRoot.toString(), "Dockerfile"),
 					"starter/Dockerfile", model);
@@ -123,7 +122,7 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		}
 	}
 
-	private void copyCommonSources(String prefix, SourceStructure mainSource, Map<String, Object> model) throws IOException, URISyntaxException {
+	private void copyCommonSources(String prefix, SourceStructure mainSource, Map<String, Object> model, String replace) throws IOException, URISyntaxException {
 		for (URL u: ResourcesScanner.getResourceURLs()) {
 			String path = u.getFile();
 			if (path.endsWith(".mustache") && path.contains(prefix)) {
@@ -133,7 +132,7 @@ public class JavaTemplatesContributor implements ProjectContributor {
 				String tmpl = fullName.substring(0, fullName.indexOf('.'));
 				String last = split[1];
 				String packageNameSuffix = last.substring(0, last.lastIndexOf("/")).replaceAll("/", ".");
-				String packageName = model.get("packageName") + prefix.replaceAll("/", ".").replace("starter.src.main.java", "");
+				String packageName = model.get("packageName") + prefix.replaceAll("/", ".").replace(replace, "");
 				String lastName = last.replaceAll(".mustache", "");
 				write(new File(mainSource.createSourceFile(packageName + packageNameSuffix, tmpl).toString()),
 						prefix + lastName, model);
@@ -153,6 +152,7 @@ public class JavaTemplatesContributor implements ProjectContributor {
         model.put("useJwt", description.getRequestedDependencies().containsKey("java-jwt"));
         model.put("useLogging", description.getRequestedDependencies().containsKey("lombok"));
         model.put("useLiquibase", description.getRequestedDependencies().containsKey("liquibase"));
+        model.put("useActuator", description.getRequestedDependencies().containsKey("actuator"));
 		return model;
 	}
 }

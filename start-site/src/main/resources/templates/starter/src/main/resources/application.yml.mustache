@@ -8,20 +8,50 @@ server:
 cors:
   origins: https://localhost:44334,http://localhost:4200
 
+{{#useSwagger2}}
+# Swagger configuration
 swagger:
   api:
     name: This is Java API Starter Kit server documentation
     description: Java API Starter Kit
-
 oauth2:
   redirect-url: https://localhost:44334/oauth2-redirect.html
   login-entry-point: https://www-dev.realpage.com/login/identity/connect/authorize
+{{/useSwagger2}}
 
-# PostgreSQL Data Source
+# Data Source configuration
+use-datasource: true
+
+db-host: localhost
+db-port: 5432
 spring:
   datasource:
-    enabled: true
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/{{name}}-db
+    url: jdbc:postgresql://${db-host}:${db-port}/{{name}}-db
     username: porta
     password: porta
+
+{{#useActuator}}
+# Spring Boot Actuator management endpoints
+management:
+  health:
+    db:
+      enabled: ${use-datasource}
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health, info, threaddump, liquibase
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    info:
+      enabled: false
+    liquibase:
+      enabled: false
+  server:
+    port: 8080
+    ssl:
+      enabled: false
+{{/useActuator}}

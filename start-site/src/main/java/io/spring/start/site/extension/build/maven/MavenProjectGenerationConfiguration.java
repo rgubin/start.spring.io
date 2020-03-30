@@ -16,15 +16,21 @@
 
 package io.spring.start.site.extension.build.maven;
 
+import io.spring.initializr.generator.buildsystem.Build;
 import io.spring.initializr.generator.buildsystem.BuildItemResolver;
+import io.spring.initializr.generator.buildsystem.Dependency;
+import io.spring.initializr.generator.buildsystem.DependencyScope;
 import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnPackaging;
+import io.spring.initializr.generator.condition.ConditionalOnPlatformVersion;
 import io.spring.initializr.generator.io.IndentingWriterFactory;
 import io.spring.initializr.generator.packaging.war.WarPackaging;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
 import io.spring.initializr.generator.spring.util.LambdaSafe;
+import io.spring.initializr.generator.version.VersionReference;
+import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.start.site.buildsystem.maven2.MavenBuild;
 import io.spring.start.site.buildsystem.maven2.MavenBuildSystem;
 import io.spring.start.site.packaging.docker.DockerPackaging;
@@ -47,6 +53,12 @@ class MavenProjectGenerationConfiguration {
 
 	public MavenProjectGenerationConfiguration(ProjectDescription description) {
 		this.description = description;
+	}
+
+	@Bean
+	public DefaultMavenBuildCustomizer initializrMetadataMaven2BuildCustomizer(ProjectDescription description,
+																			  InitializrMetadata metadata) {
+		return new DefaultMavenBuildCustomizer(description, metadata);
 	}
 
 	@Bean
@@ -85,6 +97,22 @@ class MavenProjectGenerationConfiguration {
 	public MavenBuildProjectContributor mavenBuildProjectContributor(MavenBuild build,
 																	 IndentingWriterFactory indentingWriterFactory) {
 		return new MavenBuildProjectContributor(build, indentingWriterFactory);
+	}
+
+	@Bean
+	@ConditionalOnPlatformVersion("2.2.0.M5")
+	public BuildCustomizer<Build> junitJupiterAddTestStarterContributor() {
+		return (build) -> build.dependencies().add("test-j5",
+				Dependency.withCoordinates("org.junit.jupiter", "junit-jupiter-engine")
+						.scope(DependencyScope.TEST_COMPILE));
+	}
+
+	@Bean
+	public BuildCustomizer<Build> restAssuredContributor() {
+		return (build) -> build.dependencies().add("restassured",
+				Dependency.withCoordinates("io.rest-assured", "rest-assured")
+						.scope(DependencyScope.TEST_COMPILE)
+						.version(VersionReference.ofValue("3.0.1")));
 	}
 
 	@Bean

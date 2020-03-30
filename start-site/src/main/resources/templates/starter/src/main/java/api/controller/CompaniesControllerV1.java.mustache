@@ -13,7 +13,9 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,8 +81,8 @@ public class CompaniesControllerV1 {
             @ApiResponse(code = 201, message = "Company created successfully")
     })
     @Secured("ROLE_OAUTH2")
-    public CompanyDto createCompany(@ApiParam @RequestBody CompanyCreateRequestDto companyDto) {
-        return companyService.createCompany(companyDto);
+    public ResponseEntity<CompanyDto> createCompany(@ApiParam @RequestBody CompanyCreateRequestDto companyDto) {
+        return new ResponseEntity<>(companyService.createCompany(companyDto), HttpStatus.CREATED);
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
