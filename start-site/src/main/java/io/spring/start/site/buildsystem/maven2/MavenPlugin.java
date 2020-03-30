@@ -194,7 +194,8 @@ public class MavenPlugin {
 		}
 
 		/**
-		 * Build a {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin} with the current state of this builder.
+		 * Build a {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin}
+		 * with the current state of this builder.
 		 * @return a {@link MavenBuild}
 		 */
 		public MavenPlugin build() {
@@ -331,7 +332,8 @@ public class MavenPlugin {
 	}
 
 	/**
-	 * A {@code <configuration>} on an {@link Execution} or {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin}.
+	 * A {@code <configuration>} on an {@link Execution} or
+	 * {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin}.
 	 */
 	public static final class Configuration {
 
@@ -384,7 +386,8 @@ public class MavenPlugin {
 	}
 
 	/**
-	 * An {@code <execution>} of a {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin}.
+	 * An {@code <execution>} of a
+	 * {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin}.
 	 */
 	public static final class Execution {
 
@@ -438,7 +441,8 @@ public class MavenPlugin {
 	}
 
 	/**
-	 * A {@code <dependency>} of a {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin}.
+	 * A {@code <dependency>} of a
+	 * {@link io.spring.initializr.generator.buildsystem.maven.MavenPlugin}.
 	 */
 	public static final class Dependency {
 

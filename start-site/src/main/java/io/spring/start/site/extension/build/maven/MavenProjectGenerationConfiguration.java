@@ -57,7 +57,7 @@ class MavenProjectGenerationConfiguration {
 
 	@Bean
 	public DefaultMavenBuildCustomizer initializrMetadataMaven2BuildCustomizer(ProjectDescription description,
-																			  InitializrMetadata metadata) {
+			InitializrMetadata metadata) {
 		return new DefaultMavenBuildCustomizer(description, metadata);
 	}
 
@@ -79,7 +79,7 @@ class MavenProjectGenerationConfiguration {
 
 	@Bean
 	public MavenBuild mavenBuild(ObjectProvider<BuildItemResolver> buildItemResolver,
-								 ObjectProvider<BuildCustomizer<?>> buildCustomizers) {
+			ObjectProvider<BuildCustomizer<?>> buildCustomizers) {
 		return createBuild(buildItemResolver.getIfAvailable(),
 				buildCustomizers.orderedStream().collect(Collectors.toList()));
 	}
@@ -95,23 +95,21 @@ class MavenProjectGenerationConfiguration {
 
 	@Bean
 	public MavenBuildProjectContributor mavenBuildProjectContributor(MavenBuild build,
-																	 IndentingWriterFactory indentingWriterFactory) {
+			IndentingWriterFactory indentingWriterFactory) {
 		return new MavenBuildProjectContributor(build, indentingWriterFactory);
 	}
 
 	@Bean
 	@ConditionalOnPlatformVersion("2.2.0.M5")
 	public BuildCustomizer<Build> junitJupiterAddTestStarterContributor() {
-		return (build) -> build.dependencies().add("test-j5",
-				Dependency.withCoordinates("org.junit.jupiter", "junit-jupiter-engine")
-						.scope(DependencyScope.TEST_COMPILE));
+		return (build) -> build.dependencies().add("test-j5", Dependency
+				.withCoordinates("org.junit.jupiter", "junit-jupiter-engine").scope(DependencyScope.TEST_COMPILE));
 	}
 
 	@Bean
 	public BuildCustomizer<Build> restAssuredContributor() {
 		return (build) -> build.dependencies().add("restassured",
-				Dependency.withCoordinates("io.rest-assured", "rest-assured")
-						.scope(DependencyScope.TEST_COMPILE)
+				Dependency.withCoordinates("io.rest-assured", "rest-assured").scope(DependencyScope.TEST_COMPILE)
 						.version(VersionReference.ofValue("3.0.1")));
 	}
 
@@ -120,4 +118,5 @@ class MavenProjectGenerationConfiguration {
 	public BuildCustomizer<MavenBuild> mavenWarPackagingConfigurer() {
 		return (build) -> build.settings().packaging("war");
 	}
+
 }

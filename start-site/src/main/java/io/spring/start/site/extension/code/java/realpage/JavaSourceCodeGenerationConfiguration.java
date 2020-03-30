@@ -25,20 +25,22 @@ import org.springframework.context.annotation.Bean;
 @ProjectGenerationConfiguration
 public class JavaSourceCodeGenerationConfiguration {
 
-    private final InitializrMetadata metadata;
+	private final InitializrMetadata metadata;
 
-    private final ProjectDescription description;
+	private final ProjectDescription description;
 
-    private final TemplateRenderer templateRenderer;
+	private final TemplateRenderer templateRenderer;
 
-    public JavaSourceCodeGenerationConfiguration(InitializrMetadata metadata, ProjectDescription description, TemplateRenderer templateRenderer) {
-        this.metadata = metadata;
-        this.description = description;
-        this.templateRenderer = templateRenderer;
-    }
+	public JavaSourceCodeGenerationConfiguration(InitializrMetadata metadata, ProjectDescription description,
+			TemplateRenderer templateRenderer) {
+		this.metadata = metadata;
+		this.description = description;
+		this.templateRenderer = templateRenderer;
+	}
 
-    @Bean
-    public JavaTemplatesContributor javaTemplatesContributor() {
-        return new JavaTemplatesContributor(templateRenderer, description);
-    }
+	@Bean
+	public JavaTemplatesContributor javaTemplatesContributor() {
+		return new JavaTemplatesContributor(templateRenderer, description);
+	}
+
 }

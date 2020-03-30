@@ -39,6 +39,7 @@ import java.util.Map;
 public class JavaTemplatesContributor implements ProjectContributor {
 
 	private final TemplateRenderer templateRenderer;
+
 	private final ProjectDescription description;
 
 	JavaTemplatesContributor(TemplateRenderer templateRenderer, ProjectDescription description) {
@@ -66,64 +67,76 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		Map<String, Object> model = resolveModel();
 
 		if (Boolean.TRUE.equals(model.get("useSwagger2"))) {
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SwaggerConfig").toString()),
-                    "starter/src/main/java/configuration/SwaggerConfig.java", model);
-            write(new File(mainSource.createSourceFile(model.get("packageName").toString(), "HomeController").toString()),
-                    "starter/src/main/java/HomeController.java", model);
-        }
-        if (Boolean.TRUE.equals(model.get("useSecurity")) && Boolean.TRUE.equals(model.get("useJwt"))) {
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SecurityConfig").toString()),
-                    "starter/src/main/java/configuration/SecurityConfig.java", model);
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".security", "JwtConfigurer").toString()),
-                    "starter/src/main/java/security/JwtConfigurer.java", model);
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenFilter").toString()),
-                    "starter/src/main/java/security/JwtTokenFilter.java", model);
-            write(new File(mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenProvider").toString()),
-                    "starter/src/main/java/security/JwtTokenProvider.java", model);
-        }
-		write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "ApplicationConfig").toString()),
-				"starter/src/main/java/configuration/ApplicationConfig.java", model);
+			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SwaggerConfig")
+					.toString()), "starter/src/main/java/configuration/SwaggerConfig.java", model);
+			write(new File(
+					mainSource.createSourceFile(model.get("packageName").toString(), "HomeController").toString()),
+					"starter/src/main/java/HomeController.java", model);
+		}
+		if (Boolean.TRUE.equals(model.get("useSecurity")) && Boolean.TRUE.equals(model.get("useJwt"))) {
+			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SecurityConfig")
+					.toString()), "starter/src/main/java/configuration/SecurityConfig.java", model);
+			write(new File(
+					mainSource.createSourceFile(model.get("packageName") + ".security", "JwtConfigurer").toString()),
+					"starter/src/main/java/security/JwtConfigurer.java", model);
+			write(new File(
+					mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenFilter").toString()),
+					"starter/src/main/java/security/JwtTokenFilter.java", model);
+			write(new File(
+					mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenProvider").toString()),
+					"starter/src/main/java/security/JwtTokenProvider.java", model);
+		}
+		write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "ApplicationConfig")
+				.toString()), "starter/src/main/java/configuration/ApplicationConfig.java", model);
 		try {
 			copyCommonSources("starter/src/main/java/api", mainSource, model, "starter.src.main.java");
-			copyCommonSources("starter/src/test/java", description.getBuildSystem().getTestSource(projectRoot, description.getLanguage()), model, "starter.src.test.java");
-		} catch (URISyntaxException e) {
+			copyCommonSources("starter/src/test/java",
+					description.getBuildSystem().getTestSource(projectRoot, description.getLanguage()), model,
+					"starter.src.test.java");
+		}
+		catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		SingleResourceProjectContributor contributor = new SingleResourceProjectContributor("src/main/resources/keystore.p12", "classpath:configuration/keystore.p12");
+		SingleResourceProjectContributor contributor = new SingleResourceProjectContributor(
+				"src/main/resources/keystore.p12", "classpath:configuration/keystore.p12");
 		contributor.contribute(projectRoot);
 
 		if (Boolean.TRUE.equals(model.get("useLiquibase"))) {
-			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "DataSourceConfig").toString()),
-					"starter/src/main/java/configuration/DataSourceConfig.java", model);
-			SingleResourceProjectContributor contributorDb = new SingleResourceProjectContributor("src/main/resources/db/changelog/db.changelog-master.yaml", "classpath:configuration/db.changelog-master.yaml");
+			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "DataSourceConfig")
+					.toString()), "starter/src/main/java/configuration/DataSourceConfig.java", model);
+			SingleResourceProjectContributor contributorDb = new SingleResourceProjectContributor(
+					"src/main/resources/db/changelog/db.changelog-master.yaml",
+					"classpath:configuration/db.changelog-master.yaml");
 			contributorDb.contribute(projectRoot);
-			SingleResourceProjectContributor contributorMg = new SingleResourceProjectContributor("src/main/resources/db/changelog/migration/FillCompanies.sql", "classpath:configuration/FillCompanies.sql");
+			SingleResourceProjectContributor contributorMg = new SingleResourceProjectContributor(
+					"src/main/resources/db/changelog/migration/FillCompanies.sql",
+					"classpath:configuration/FillCompanies.sql");
 			contributorMg.contribute(projectRoot);
 		}
 
-		SingleResourceProjectContributor contributorStatic = new SingleResourceProjectContributor("src/main/resources/static/oauth2-redirect.html", "classpath:configuration/oauth2-redirect.html");
+		SingleResourceProjectContributor contributorStatic = new SingleResourceProjectContributor(
+				"src/main/resources/static/oauth2-redirect.html", "classpath:configuration/oauth2-redirect.html");
 		contributorStatic.contribute(projectRoot);
 
 		write(new File(mainSource.createResourceFile("", "logback-spring.xml").toString()),
-                "starter/src/main/resources/logback-spring.xml", model);
+				"starter/src/main/resources/logback-spring.xml", model);
 		write(new File(mainSource.createResourceFile("", "application.yml").toString()),
-                "starter/src/main/resources/application.yml", model);
+				"starter/src/main/resources/application.yml", model);
 
-		write(new File(projectRoot.toString(), "README.md"),
-				"starter/README.md", model);
+		write(new File(projectRoot.toString(), "README.md"), "starter/README.md", model);
 
-        if (DockerPackaging.ID.equals(description.getPackaging().id())) {
-			write(new File(projectRoot.toString(), "Dockerfile"),
-					"starter/Dockerfile", model);
-            File execFile = new File(projectRoot.toString(), "run.sh");
-            Files.createFile(execFile.toPath());
-            execFile.setExecutable(true);
-            write(execFile,"starter/run.sh", model);
+		if (DockerPackaging.ID.equals(description.getPackaging().id())) {
+			write(new File(projectRoot.toString(), "Dockerfile"), "starter/Dockerfile", model);
+			File execFile = new File(projectRoot.toString(), "run.sh");
+			Files.createFile(execFile.toPath());
+			execFile.setExecutable(true);
+			write(execFile, "starter/run.sh", model);
 		}
 	}
 
-	private void copyCommonSources(String prefix, SourceStructure mainSource, Map<String, Object> model, String replace) throws IOException, URISyntaxException {
-		for (URL u: ResourcesScanner.getResourceURLs()) {
+	private void copyCommonSources(String prefix, SourceStructure mainSource, Map<String, Object> model, String replace)
+			throws IOException, URISyntaxException {
+		for (URL u : ResourcesScanner.getResourceURLs()) {
 			String path = u.getFile();
 			if (path.endsWith(".mustache") && path.contains(prefix)) {
 				String[] split = path.split(prefix);
@@ -146,13 +159,14 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		model.put("version", description.getVersion());
 		model.put("packageName", description.getPackageName());
 		model.put("applicationName", description.getApplicationName());
-        model.put("useSwagger2", description.getRequestedDependencies().containsKey("swagger2"));
-        model.put("useSpringWeb", description.getRequestedDependencies().containsKey("web"));
-        model.put("useSecurity", description.getRequestedDependencies().containsKey("security"));
-        model.put("useJwt", description.getRequestedDependencies().containsKey("java-jwt"));
-        model.put("useLogging", description.getRequestedDependencies().containsKey("lombok"));
-        model.put("useLiquibase", description.getRequestedDependencies().containsKey("liquibase"));
-        model.put("useActuator", description.getRequestedDependencies().containsKey("actuator"));
+		model.put("useSwagger2", description.getRequestedDependencies().containsKey("swagger2"));
+		model.put("useSpringWeb", description.getRequestedDependencies().containsKey("web"));
+		model.put("useSecurity", description.getRequestedDependencies().containsKey("security"));
+		model.put("useJwt", description.getRequestedDependencies().containsKey("java-jwt"));
+		model.put("useLogging", description.getRequestedDependencies().containsKey("lombok"));
+		model.put("useLiquibase", description.getRequestedDependencies().containsKey("liquibase"));
+		model.put("useActuator", description.getRequestedDependencies().containsKey("actuator"));
 		return model;
 	}
+
 }

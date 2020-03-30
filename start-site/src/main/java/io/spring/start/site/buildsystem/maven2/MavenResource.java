@@ -154,7 +154,6 @@ public class MavenResource {
 			return this;
 		}
 
-
 		public MavenResource build() {
 			return new MavenResource(this);
 		}

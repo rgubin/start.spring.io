@@ -16,7 +16,6 @@
 
 package io.spring.start.site.buildsystem.maven2;
 
-
 /**
  * A version control section of a {@link MavenBuild}.
  *

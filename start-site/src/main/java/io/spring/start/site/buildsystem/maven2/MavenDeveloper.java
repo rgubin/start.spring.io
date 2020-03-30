@@ -128,7 +128,8 @@ public class MavenDeveloper {
 	}
 
 	/**
-	 * Builder for a {@link io.spring.initializr.generator.buildsystem.maven.MavenDeveloper}.
+	 * Builder for a
+	 * {@link io.spring.initializr.generator.buildsystem.maven.MavenDeveloper}.
 	 */
 	public static class Builder {
 
