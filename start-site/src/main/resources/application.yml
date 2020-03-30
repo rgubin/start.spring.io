@@ -168,6 +168,20 @@ initializr:
             version: 2.1.6
           - compatibilityRange: "2.2.0.M1"
             version: 2.2.1
+      solace-spring-boot:
+        groupId: com.solace.spring.boot
+        artifactId: solace-spring-boot-bom
+        versionProperty: solace-spring-boot.version
+        mappings:
+          - compatibilityRange: "[2.2.0.RELEASE, 2.3.0.M1)"
+            version: 1.0.0
+      solace-spring-cloud:
+        groupId: com.solace.spring.cloud
+        artifactId: solace-spring-cloud-bom
+        versionProperty: solace-spring-cloud.version
+        mappings:
+          - compatibilityRange: "[2.2.0.RELEASE, 2.3.0.M1)"
+            version: 1.0.0
       spring-cloud:
         groupId: org.springframework.cloud
         artifactId: spring-cloud-dependencies
@@ -259,7 +273,7 @@ initializr:
           - compatibilityRange: "[2.0.0.M1,2.1.0.M1)"
             version: 10.0.17
           - compatibilityRange: "2.1.0.M1"
-            version: 14.1.20
+            version: 14.1.21
     gradle:
       dependency-management-plugin-version: 1.0.9.RELEASE
     kotlin:
@@ -578,6 +592,16 @@ initializr:
               description: Accessing Data with JPA
             - rel: reference
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-jpa-and-spring-data
+        - name: Spring Data JDBC
+          id: data-jdbc
+          compatibilityRange: "2.1.0.RELEASE"
+          description: Persist data in SQL stores with plain JDBC using Spring Data.
+          links:
+            - rel: guide
+              href: https://github.com/spring-projects/spring-data-examples/tree/master/jdbc/basics
+              description: Using Spring Data JDBC
+            - rel: reference
+              href: https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/
         - name: Spring Data R2DBC
           id: data-r2dbc
           compatibilityRange: "2.3.0.M3"
@@ -754,7 +778,7 @@ initializr:
           description: Apache Geode is a data management platform that helps users build real-time, highly concurrent, highly performant and reliable Spring Boot applications at scale that is compatible with Pivotal Cloud Cache.
           mappings:
             - compatibilityRange: "[2.2.0.M5,2.3.0.M1)"
-              version: 1.2.5.RELEASE
+              version: 1.2.6.RELEASE
             - compatibilityRange: "[2.3.0.M1, 2.3.x.BUILD-SNAPSHOT)"
               version: 1.3.0.M3
               repositories: spring-milestones
@@ -891,25 +915,19 @@ initializr:
               href: https://camel.apache.org/spring-boot
               description: Using Apache Camel with Spring Boot
         - name: Solace PubSub+
+          bom: solace-spring-boot
           id: solace
-          compatibilityRange: 2.1.0.RELEASE
-          description: Connect to a Solace PubSub+ Advanced Event Broker using the Solace JMS support to send and receive messages.
+          compatibilityRange: "[2.2.0.RELEASE,2.3.0.M1)"
+          description: Connect to a Solace PubSub+ Advanced Event Broker to publish, subscribe, request/reply and store/replay messages
           groupId: com.solace.spring.boot
-          artifactId: solace-jms-spring-boot-starter
-          mappings:
-            - compatibilityRange: "[2.1.0.RELEASE,2.2.0.M1)"
-              version: 3.1.0
-            - compatibilityRange: "2.2.0.M1"
-              version: 3.2.0
+          artifactId: solace-spring-boot-starter
           links:
+            - rel: reference
+              href: https://www.solace.dev/start-spring-io-help/
+              description: Getting started with Solace and Spring
             - rel: reference
               href: https://solace.dev
               description: Solace Developer Portal
-            - rel: reference
-              href: https://github.com/SolaceProducts/solace-jms-spring-boot
-            - rel: guide
-              href: https://github.com/SolaceProducts/solace-jms-spring-boot/tree/master/solace-jms-sample-app
-              description: Solace sample application using JMS.
     - name: I/O
       content:
         - name: Spring Batch
@@ -1252,7 +1270,7 @@ initializr:
           artifactId: spring-cloud-bus
         - name: Cloud Stream
           id: cloud-stream
-          description: Framework for building highly scalable event-driven microservices connected with shared messaging systems (requires a binder, e.g. Apache Kafka or RabbitMQ).
+          description: Framework for building highly scalable event-driven microservices connected with shared messaging systems (requires a binder, e.g. Apache Kafka, RabbitMQ or Solace PubSub+).
           groupId: org.springframework.cloud
           artifactId: spring-cloud-stream
         - name: Reactive Cloud Stream
