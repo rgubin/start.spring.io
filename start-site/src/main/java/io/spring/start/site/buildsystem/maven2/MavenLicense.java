@@ -72,7 +72,8 @@ public class MavenLicense {
 	}
 
 	/**
-	 * Builder for a {@link io.spring.initializr.generator.buildsystem.maven.MavenLicense}.
+	 * Builder for a
+	 * {@link io.spring.initializr.generator.buildsystem.maven.MavenLicense}.
 	 */
 	public static class Builder {
 

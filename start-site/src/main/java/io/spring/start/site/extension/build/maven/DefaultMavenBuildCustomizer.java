@@ -70,57 +70,51 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 		}
 		build.settings().parent(parentPom.getGroupId(), parentPom.getArtifactId(), parentPom.getVersion());
 
-		//tests
+		// tests
 
 		build.plugins().add("org.apache.maven.plugins", "maven-failsafe-plugin", failsafePlugin -> {
 			failsafePlugin.version("2.22.2");
-			failsafePlugin.configuration(config ->
-					config.add("argLine", "-Ddb-host=${docker.container.db.ip} -Duse-datasource=true"));
+			failsafePlugin.configuration(
+					config -> config.add("argLine", "-Ddb-host=${docker.container.db.ip} -Duse-datasource=true"));
 		});
 		build.plugins().add("org.apache.maven.plugins", "maven-surefire-plugin", surefirePlugin -> {
 			surefirePlugin.version("2.22.2");
-			surefirePlugin.configuration(config ->
-					config.configure("excludes", excludes -> {
-						excludes.add("exclude", "**/*Tests.java");
-					}));
+			surefirePlugin.configuration(config -> config.configure("excludes", excludes -> {
+				excludes.add("exclude", "**/*Tests.java");
+			}));
 		});
 
 		Consumer<MavenPlugin.Builder> dockerPluginConsumer = dockerPlugin -> {
 			dockerPlugin.version("0.33.0");
-			dockerPlugin.configuration(config ->
-					config.configure("images", images -> {
-						images.configure("image", image -> {
-							image.add("name", "postgres:10");
-							image.add("alias", "db");
-							image.configure("run", run -> {
-								run.add("namingStrategy", "alias");
-								run.configure("env", env -> {
-									env.add("POSTGRES_DB", build.getSettings().getName() + "-db");
-									env.add("POSTGRES_USER", "porta");
-									env.add("POSTGRES_PASSWORD", "porta");
-								});
-								run.configure("ports", port -> port.add("port", "5432:5432"));
-								run.configure("wait", wait -> {
-									wait.configure("tcp", tcp ->
-											tcp.configure("ports",
-													port -> port.add("port", "5432")));
-									wait.add("time", "20000");
-								});
-								run.configure("log", log -> log.add("color", "green"));
-							});
+			dockerPlugin.configuration(config -> config.configure("images", images -> {
+				images.configure("image", image -> {
+					image.add("name", "postgres:10");
+					image.add("alias", "db");
+					image.configure("run", run -> {
+						run.add("namingStrategy", "alias");
+						run.configure("env", env -> {
+							env.add("POSTGRES_DB", build.getSettings().getName() + "-db");
+							env.add("POSTGRES_USER", "porta");
+							env.add("POSTGRES_PASSWORD", "porta");
 						});
-					}));
-			dockerPlugin.execution("start", execution -> execution.phase("pre-integration-test").goal("stop").goal("start"));
+						run.configure("ports", port -> port.add("port", "5432:5432"));
+						run.configure("wait", wait -> {
+							wait.configure("tcp", tcp -> tcp.configure("ports", port -> port.add("port", "5432")));
+							wait.add("time", "20000");
+						});
+						run.configure("log", log -> log.add("color", "green"));
+					});
+				});
+			}));
+			dockerPlugin.execution("start",
+					execution -> execution.phase("pre-integration-test").goal("stop").goal("start"));
 			dockerPlugin.execution("stop", execution -> execution.phase("post-integration-test").goal("stop"));
 		};
 
 		MavenBuild profileBuild = new MavenBuild();
 		profileBuild.plugins().add("io.fabric8", "docker-maven-plugin", dockerPluginConsumer);
-		MavenProfile profile = new MavenProfile.Builder()
-				.id("pg-docker")
-				.activation(a->a.activeByDefault(false))
-				.mavenBuild(profileBuild)
-				.build();
+		MavenProfile profile = new MavenProfile.Builder().id("pg-docker").activation(a -> a.activeByDefault(false))
+				.mavenBuild(profileBuild).build();
 		build.buildProfiles().add(profile);
 	}
 
@@ -128,4 +122,5 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 		return build.boms().items().anyMatch((candidate) -> candidate.getGroupId().equals(bom.getGroupId())
 				&& candidate.getArtifactId().equals(bom.getArtifactId()));
 	}
+
 }

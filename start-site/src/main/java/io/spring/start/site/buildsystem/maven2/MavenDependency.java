@@ -63,7 +63,8 @@ public class MavenDependency extends Dependency {
 	/**
 	 * Builder for a Maven dependency.
 	 *
-	 * @see io.spring.initializr.generator.buildsystem.maven.MavenDependency#withCoordinates(String, String)
+	 * @see io.spring.initializr.generator.buildsystem.maven.MavenDependency#withCoordinates(String,
+	 * String)
 	 */
 	public static class Builder extends Dependency.Builder<Builder> {
 

@@ -25,192 +25,211 @@ import java.util.function.Consumer;
  */
 public class MavenProfile {
 
-    private final String id;
+	private final String id;
 
-    private final MavenBuild mavenBuild;
+	private final MavenBuild mavenBuild;
 
-    private final Activation activation;
+	private final Activation activation;
 
-    MavenProfile(Builder builder) {
-        this.id = builder.id;
-        this.mavenBuild = builder.mavenBuild;
-        this.activation = (builder.activation == null) ? null : builder.activation.build();
-    }
+	MavenProfile(Builder builder) {
+		this.id = builder.id;
+		this.mavenBuild = builder.mavenBuild;
+		this.activation = (builder.activation == null) ? null : builder.activation.build();
+	}
 
-    public boolean isEmpty() {
-        return id == null;
-    }
+	public boolean isEmpty() {
+		return id == null;
+	}
 
-    /**
-     * Return the ID of the developer.
-     *
-     * @return the ID
-     */
-    public String getId() {
-        return this.id;
-    }
+	/**
+	 * Return the ID of the developer.
+	 * @return the ID
+	 */
+	public String getId() {
+		return this.id;
+	}
 
-    public MavenBuild getMavenBuild() {
-        return this.mavenBuild;
-    }
+	public MavenBuild getMavenBuild() {
+		return this.mavenBuild;
+	}
 
-    public Activation getActivation() {
-        return this.activation;
-    }
+	public Activation getActivation() {
+		return this.activation;
+	}
 
-    public static class Builder {
-        private String id;
-        private MavenBuild mavenBuild = new MavenBuild();
-        private Activation.Builder activation = new Activation.Builder();
+	public static class Builder {
 
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
+		private String id;
 
-        public Builder mavenBuild(MavenBuild build) {
-            this.mavenBuild = build;
-            return this;
-        }
+		private MavenBuild mavenBuild = new MavenBuild();
 
-        public Builder activation(Activation.Builder activationBuilder) {
-            this.activation = activationBuilder;
-            return this;
-        }
+		private Activation.Builder activation = new Activation.Builder();
+
+		public Builder id(String id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder mavenBuild(MavenBuild build) {
+			this.mavenBuild = build;
+			return this;
+		}
+
+		public Builder activation(Activation.Builder activationBuilder) {
+			this.activation = activationBuilder;
+			return this;
+		}
 
 		public Builder activation(Consumer<Activation.Builder> activation) {
 			activation.accept(this.activation);
 			return this;
 		}
 
-        public MavenProfile build() {
-            return new MavenProfile(this);
-        }
+		public MavenProfile build() {
+			return new MavenProfile(this);
+		}
 
-    }
+	}
 
-    public static final class Activation {
-        private final Boolean activeByDefault;
-        private final String jdk;
-        private final ActivationOS os;
+	public static final class Activation {
 
-        Activation(Builder builder) {
-            this.activeByDefault = builder.activeByDefault;
-            this.jdk = builder.jdk;
-            this.os = (builder.os == null) ? null : builder.os.build();
-        }
+		private final Boolean activeByDefault;
 
-        public boolean isEmpty() {
-            return !(activeByDefault != null || jdk != null || os != null);
-        }
+		private final String jdk;
 
-        public Boolean isActiveByDefault() {
-            return activeByDefault;
-        }
+		private final ActivationOS os;
 
-        public String getJdk() {
-            return jdk;
-        }
+		Activation(Builder builder) {
+			this.activeByDefault = builder.activeByDefault;
+			this.jdk = builder.jdk;
+			this.os = (builder.os == null) ? null : builder.os.build();
+		}
 
-        public ActivationOS getOs() {
-            return os;
-        }
+		public boolean isEmpty() {
+			return !(activeByDefault != null || jdk != null || os != null);
+		}
 
-        public static class Builder {
-            private Boolean activeByDefault;
-            private String jdk;
-            private ActivationOS.Builder os = new ActivationOS.Builder();
+		public Boolean isActiveByDefault() {
+			return activeByDefault;
+		}
 
-            public Builder activeByDefault(boolean activeByDefault) {
-                this.activeByDefault = activeByDefault;
-                return this;
-            }
+		public String getJdk() {
+			return jdk;
+		}
 
-            public Builder jdk(String jdk) {
-                this.jdk = jdk;
-                return this;
-            }
+		public ActivationOS getOs() {
+			return os;
+		}
 
-            public Builder activationOsBuilder(ActivationOS.Builder builder) {
-                this.os = builder;
-                return this;
-            }
+		public static class Builder {
 
-            public Builder os(Consumer<ActivationOS.Builder> os) {
-                os.accept(this.os);
-                return this;
-            }
+			private Boolean activeByDefault;
 
-            public Activation build() {
-                return new Activation(this);
-            }
-        }
-    }
+			private String jdk;
 
-    public static final class ActivationOS {
-        private String name;
-        private String family;
-        private String arch;
-        private String version;
+			private ActivationOS.Builder os = new ActivationOS.Builder();
 
-        public ActivationOS(ActivationOS.Builder builder) {
-            this.name = builder.name;
-            this.family = builder.family;
-            this.arch = builder.arch;
-            this.version = builder.version;
-        }
+			public Builder activeByDefault(boolean activeByDefault) {
+				this.activeByDefault = activeByDefault;
+				return this;
+			}
 
+			public Builder jdk(String jdk) {
+				this.jdk = jdk;
+				return this;
+			}
 
-        public boolean isEmpty() {
-            return !(name != null || family != null || arch != null || version != null);
-        }
+			public Builder activationOsBuilder(ActivationOS.Builder builder) {
+				this.os = builder;
+				return this;
+			}
 
-        public String getName() {
-            return name;
-        }
+			public Builder os(Consumer<ActivationOS.Builder> os) {
+				os.accept(this.os);
+				return this;
+			}
 
-        public String getFamily() {
-            return family;
-        }
+			public Activation build() {
+				return new Activation(this);
+			}
 
-        public String getArch() {
-            return arch;
-        }
+		}
 
-        public String getVersion() {
-            return version;
-        }
+	}
 
-        public static class Builder {
+	public static final class ActivationOS {
 
-            public String name;
-            public String family;
-            public String arch;
-            public String version;
+		private String name;
 
-            public Builder name(String name) {
-                this.name = name;
-                return this;
-            }
+		private String family;
 
-            public Builder family(String family) {
-                this.family = family;
-                return this;
-            }
+		private String arch;
 
-            public Builder arch(String arch) {
-                this.arch = arch;
-                return this;
-            }
+		private String version;
 
-            public Builder version(String version) {
-                this.version = version;
-                return this;
-            }
+		public ActivationOS(ActivationOS.Builder builder) {
+			this.name = builder.name;
+			this.family = builder.family;
+			this.arch = builder.arch;
+			this.version = builder.version;
+		}
 
-            public ActivationOS build() {
-                return new ActivationOS(this);
-            }
-        }
-    }
+		public boolean isEmpty() {
+			return !(name != null || family != null || arch != null || version != null);
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getFamily() {
+			return family;
+		}
+
+		public String getArch() {
+			return arch;
+		}
+
+		public String getVersion() {
+			return version;
+		}
+
+		public static class Builder {
+
+			public String name;
+
+			public String family;
+
+			public String arch;
+
+			public String version;
+
+			public Builder name(String name) {
+				this.name = name;
+				return this;
+			}
+
+			public Builder family(String family) {
+				this.family = family;
+				return this;
+			}
+
+			public Builder arch(String arch) {
+				this.arch = arch;
+				return this;
+			}
+
+			public Builder version(String version) {
+				this.version = version;
+				return this;
+			}
+
+			public ActivationOS build() {
+				return new ActivationOS(this);
+			}
+
+		}
+
+	}
+
 }

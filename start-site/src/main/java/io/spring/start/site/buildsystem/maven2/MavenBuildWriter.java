@@ -195,7 +195,7 @@ public class MavenBuildWriter {
 	}
 
 	private Collection<Dependency> writeDependencies(IndentingWriter writer, DependencyContainer dependencies,
-                                                     Predicate<DependencyScope> filter) {
+			Predicate<DependencyScope> filter) {
 		Collection<Dependency> candidates = dependencies.items().filter((dep) -> filter.test(dep.getScope()))
 				.sorted(DependencyComparator.INSTANCE).collect(Collectors.toList());
 		writeCollection(writer, candidates, this::writeDependency);
@@ -321,9 +321,9 @@ public class MavenBuildWriter {
 
 	private void writeActivation(IndentingWriter writer, MavenProfile.Activation activation) {
 		writeElement(writer, "activation", () -> {
-				writeSingleElement(writer, "activeByDefault", Boolean.toString(activation.isActiveByDefault()));
-				writeSingleElement(writer, "jdk", activation.getJdk());
-				writeOs(writer, activation.getOs());
+			writeSingleElement(writer, "activeByDefault", Boolean.toString(activation.isActiveByDefault()));
+			writeSingleElement(writer, "jdk", activation.getJdk());
+			writeOs(writer, activation.getOs());
 		});
 	}
 
@@ -398,7 +398,8 @@ public class MavenBuildWriter {
 			writeSingleElement(writer, setting.getName(), (String) setting.getValue());
 		}
 		else if (setting.getValue() instanceof List) {
-			writeCollectionElement(writer, setting.getName(), (List<MavenPlugin.Setting>) setting.getValue(), this::writeSetting);
+			writeCollectionElement(writer, setting.getName(), (List<MavenPlugin.Setting>) setting.getValue(),
+					this::writeSetting);
 		}
 	}
 
@@ -486,7 +487,8 @@ public class MavenBuildWriter {
 		});
 	}
 
-	private void writeDeploymentRepository(IndentingWriter writer, String name, MavenDistributionManagement.DeploymentRepository repository) {
+	private void writeDeploymentRepository(IndentingWriter writer, String name,
+			MavenDistributionManagement.DeploymentRepository repository) {
 		if (!repository.isEmpty()) {
 			writeElement(writer, name, () -> {
 				writeSingleElement(writer, "id", repository.getId());
@@ -515,19 +517,19 @@ public class MavenBuildWriter {
 	}
 
 	private <T> void writeCollectionElement(IndentingWriter writer, String name, Stream<T> items,
-                                            BiConsumer<IndentingWriter, T> itemWriter) {
+			BiConsumer<IndentingWriter, T> itemWriter) {
 		writeCollectionElement(writer, name, items.collect(Collectors.toList()), itemWriter);
 	}
 
 	private <T> void writeCollectionElement(IndentingWriter writer, String name, Collection<T> items,
-                                            BiConsumer<IndentingWriter, T> itemWriter) {
+			BiConsumer<IndentingWriter, T> itemWriter) {
 		if (!ObjectUtils.isEmpty(items)) {
 			writeElement(writer, name, () -> writeCollection(writer, items, itemWriter));
 		}
 	}
 
 	private <T> void writeCollection(IndentingWriter writer, Collection<T> collection,
-                                     BiConsumer<IndentingWriter, T> itemWriter) {
+			BiConsumer<IndentingWriter, T> itemWriter) {
 		if (!collection.isEmpty()) {
 			collection.forEach((item) -> itemWriter.accept(writer, item));
 		}

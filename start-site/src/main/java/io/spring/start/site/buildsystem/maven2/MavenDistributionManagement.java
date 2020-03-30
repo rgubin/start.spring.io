@@ -155,9 +155,11 @@ public class MavenDistributionManagement {
 		}
 
 		/**
-		 * Build a {@link io.spring.initializr.generator.buildsystem.maven.MavenDistributionManagement} with the current state of this
-		 * builder.
-		 * @return a {@link io.spring.initializr.generator.buildsystem.maven.MavenDistributionManagement}
+		 * Build a
+		 * {@link io.spring.initializr.generator.buildsystem.maven.MavenDistributionManagement}
+		 * with the current state of this builder.
+		 * @return a
+		 * {@link io.spring.initializr.generator.buildsystem.maven.MavenDistributionManagement}
 		 */
 		public MavenDistributionManagement build() {
 			return new MavenDistributionManagement(this);
