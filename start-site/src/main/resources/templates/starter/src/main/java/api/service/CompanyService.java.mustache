@@ -1,9 +1,16 @@
 package {{packageName}}.api.service;
 
+import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
 import {{packageName}}.api.controller.dto.CompanyDto;
+import {{packageName}}.api.dao.data.Company;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CompanyService {
     public List<CompanyDto> getCompanyList();
+    public CompanyDto getCompany(UUID companyId);
+    public CompanyDto createCompany(CompanyCreateRequestDto company);
+    public CompanyDto updateCompany(CompanyDto company);
+    public void deleteCompany(UUID companyId);
 }

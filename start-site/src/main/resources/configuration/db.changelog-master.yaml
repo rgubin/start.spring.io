@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: createTable-example
+      author: demo
+      changes:
+        - createTable:
+            tableName: company
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: website
+                  type: varchar(255)
+              - column:
+                  name: company_type
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: createIndex-example
+      author: demo
+      changes:
+        - createIndex:
+            indexName: idx_company_name
+            tableName: company
+            columns:
+              - column:
+                  name: name
+  - changeSet:
+      id: plainSql-example
+      author: demo
+      changes:
+        - sqlFile:
+            endDelimiter: ;
+            path: migration/FillCompanies.sql
+            relativeToChangelogFile: true
+

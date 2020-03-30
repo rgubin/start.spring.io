@@ -1,0 +1,9 @@
+package {{packageName}}.api.controller.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
+
+@ApiModel("CompanyUpdateRequest")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CompanyUpdateRequestDto extends CompanyDto {
+}

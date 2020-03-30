@@ -1,0 +1,27 @@
+server:
+  port: 44334
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: password
+    keyStoreType: PKCS12
+
+cors:
+  origins: https://localhost:44334,http://localhost:4200
+
+swagger:
+  api:
+    name: This is Java API Starter Kit server documentation
+    description: Java API Starter Kit
+
+oauth2:
+  redirect-url: https://localhost:44334/oauth2-redirect.html
+  login-entry-point: https://www-dev.realpage.com/login/identity/connect/authorize
+
+# PostgreSQL Data Source
+spring:
+  datasource:
+    enabled: true
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/{{name}}-db
+    username: porta
+    password: porta

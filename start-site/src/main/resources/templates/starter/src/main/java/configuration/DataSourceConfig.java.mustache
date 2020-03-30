@@ -1,0 +1,18 @@
+package {{packageName}}.configuration;
+
+import liquibase.integration.spring.SpringLiquibase;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class DataSourceConfig {
+
+    @Bean
+    @ConditionalOnProperty(value = "spring.datasource.enabled", havingValue = "false")
+    public SpringLiquibase liquibase() {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setShouldRun(false);
+        return liquibase;
+    }
+}

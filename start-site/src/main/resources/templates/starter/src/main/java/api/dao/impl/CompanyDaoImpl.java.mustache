@@ -1,0 +1,71 @@
+package {{packageName}}.api.dao.impl;
+
+import {{packageName}}.api.dao.CompanyDao;
+import {{packageName}}.api.dao.data.Company;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+@Primary
+@Repository
+@Transactional
+@ConditionalOnProperty(value = "spring.datasource.enabled", matchIfMissing = true)
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class CompanyDaoImpl implements CompanyDao {
+    private final JdbcTemplate jdbc;
+    public static final RowMapper<Company> COMPANY_ROW_MAPPER = (rs, i) -> new Company.Builder()
+            .id((UUID) rs.getObject("id"))
+            .name(rs.getString("name"))
+            .webSite(rs.getString("website"))
+            .companyType(rs.getInt("company_type"))
+            .build();
+
+    public CompanyDaoImpl(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
+    @Override
+    public Company getCompany(UUID id) {
+        String query = "SELECT id, name, website, company_type FROM company WHERE id = ?";
+        return jdbc.queryForObject(query, new Object[]{id}, Company.class);
+    }
+
+    @Override
+    public List<Company> getCompanies() {
+        String query = "SELECT id, name, website, company_type FROM company";
+        return jdbc.query(query, COMPANY_ROW_MAPPER);
+    }
+
+    @Override
+    public void removeCompany(UUID id) {
+        String query = "DELETE FROM company WHERE id = ?";
+        jdbc.update(query, id);
+    }
+
+    @Override
+    public Company upsertCompany(Company company) {
+        if (company.getId() == null) {
+            company.setId(UUID.randomUUID());
+        }
+        Timestamp time = new Timestamp(new Date().getTime());
+        String query = "INSERT INTO company (id, name, website, company_type, created, updated)" +
+                " VALUES (?, ?, ?, ?, ?, ?)" +
+                " ON CONFLICT (id)" +
+                " DO UPDATE SET name = EXCLUDED.name, " +
+                " website = EXCLUDED.website, company_type = EXCLUDED.company_type," +
+                " updated = EXCLUDED.updated" +
+                " RETURNING id, name, website, company_type";
+        return jdbc.queryForObject(query, new Object[]{
+                company.getId(), company.getName(), company.getWebSite(),
+                company.getCompanyType(),
+                time, time}, COMPANY_ROW_MAPPER);
+    }
+}

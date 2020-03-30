@@ -1,32 +1,63 @@
 package {{packageName}}.api.service.impl;
 
 import {{packageName}}.api.controller.domain.DAOConverter;
+import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
 import {{packageName}}.api.controller.dto.CompanyDto;
-import {{packageName}}.api.dao.Company;
+import {{packageName}}.api.dao.CompanyDao;
+import {{packageName}}.api.dao.data.Company;
 import {{packageName}}.api.service.CompanyService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service("companyServiceV1")
-//@Transactional
-//@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CompanyServiceV1Impl implements CompanyService {
     private final DAOConverter converter;
+    private final CompanyDao companyDao;
 
-    public CompanyServiceV1Impl(DAOConverter converter) {
+    public CompanyServiceV1Impl(DAOConverter converter, CompanyDao companyDao) {
         this.converter = converter;
+        this.companyDao = companyDao;
+    }
+    @Override
+    public List<CompanyDto> getCompanyList() {
+        return converter.convert(companyDao.getCompanies());
     }
 
     @Override
-    public List<CompanyDto> getCompanyList() {
-        List<Company> companies = new ArrayList<>();
-        Company company = new Company();
-        company.setId(UUID.randomUUID());
-        company.setName("Test ZZX");
-        companies.add(company);
-        return converter.convert(companies);
+    public CompanyDto getCompany(UUID companyId) {
+        return converter.convert(companyDao.getCompany(companyId));
+    }
+
+    @Override
+    public CompanyDto createCompany(CompanyCreateRequestDto company) {
+        return converter.convert(companyDao.upsertCompany(new Company.Builder()
+                .name(company.getName())
+                .webSite(company.getWebSite())
+                .companyType(getTypeByDescription(company.getTypeDescription()))
+                .build()));
+    }
+
+    @Override
+    public void deleteCompany(UUID companyId) {
+        companyDao.removeCompany(companyId);
+    }
+
+    @Override
+    public CompanyDto updateCompany(CompanyDto company) {
+        return converter.convert(companyDao.upsertCompany(new Company.Builder()
+                .id(company.getId())
+                .name(company.getName())
+                .webSite(company.getWebSite())
+                .companyType(getTypeByDescription(company.getTypeDescription()))
+                .build()));
+    }
+    private Integer getTypeByDescription(String companyTypeDescription) {
+        return "Multifamily".equals(companyTypeDescription) ? 1 : 0;
     }
 }

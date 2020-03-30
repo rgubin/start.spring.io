@@ -96,11 +96,22 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		SingleResourceProjectContributor contributor = new SingleResourceProjectContributor("src/main/resources/keystore.p12", "classpath:configuration/keystore.p12");
 		contributor.contribute(projectRoot);
 
+		if (Boolean.TRUE.equals(model.get("useLiquibase"))) {
+			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "DataSourceConfig").toString()),
+					"starter/src/main/java/configuration/DataSourceConfig.java", model);
+			SingleResourceProjectContributor contributorDb = new SingleResourceProjectContributor("src/main/resources/db/changelog/db.changelog-master.yaml", "classpath:configuration/db.changelog-master.yaml");
+			contributorDb.contribute(projectRoot);
+			SingleResourceProjectContributor contributorMg = new SingleResourceProjectContributor("src/main/resources/db/changelog/migration/FillCompanies.sql", "classpath:configuration/FillCompanies.sql");
+			contributorMg.contribute(projectRoot);
+		}
+
 		SingleResourceProjectContributor contributorStatic = new SingleResourceProjectContributor("src/main/resources/static/oauth2-redirect.html", "classpath:configuration/oauth2-redirect.html");
 		contributorStatic.contribute(projectRoot);
 
 		write(new File(mainSource.createResourceFile("", "logback-spring.xml").toString()),
                 "starter/src/main/resources/logback-spring.xml", model);
+		write(new File(mainSource.createResourceFile("", "application.yml").toString()),
+                "starter/src/main/resources/application.yml", model);
 
         if (DockerPackaging.ID.equals(description.getPackaging().id())) {
 			write(new File(projectRoot.toString(), "Dockerfile"),
@@ -141,6 +152,7 @@ public class JavaTemplatesContributor implements ProjectContributor {
         model.put("useSecurity", description.getRequestedDependencies().containsKey("security"));
         model.put("useJwt", description.getRequestedDependencies().containsKey("java-jwt"));
         model.put("useLogging", description.getRequestedDependencies().containsKey("lombok"));
+        model.put("useLiquibase", description.getRequestedDependencies().containsKey("liquibase"));
 		return model;
 	}
 }

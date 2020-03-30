@@ -1,12 +1,13 @@
 package {{packageName}}.api.controller.domain;
 
 import {{packageName}}.api.controller.dto.CompanyDto;
-import {{packageName}}.api.dao.Company;
+import {{packageName}}.api.dao.data.Company;
 import {{packageName}}.api.dao.domain.DAOVisitor;
 
 public class DAOConverterVisitor implements DAOVisitor {
     private final DAOConverter converter;
     private Object result;
+
     DAOConverterVisitor(DAOConverter converter) {
         this.converter = converter;
     }
@@ -21,7 +22,11 @@ public class DAOConverterVisitor implements DAOVisitor {
         dto.setId(company.getId());
         dto.setName(company.getName());
         dto.setWebSite(company.getWebSite());
-        dto.setTypeDescription(company.getCompanyTypeDescription());
+        dto.setTypeDescription(getCompanyTypeDescription(company.getCompanyType()));
         result = dto;
+    }
+
+    private String getCompanyTypeDescription(Integer companyType) {
+        return companyType == 1 ? "Multifamily" : "SeniorLiving";
     }
 }

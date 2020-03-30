@@ -1,0 +1,16 @@
+package {{packageName}}.api.dao;
+
+import {{packageName}}.api.dao.data.Company;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface CompanyDao {
+    public Company getCompany(UUID id);
+
+    public List<Company> getCompanies();
+
+    public void removeCompany(UUID id);
+
+    public Company upsertCompany(Company company);
+}
