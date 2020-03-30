@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  *
  * @author Roman I. Gubin
  */
-public class MavenBuildProfile {
+public class MavenProfile {
 
     private final String id;
 
@@ -31,7 +31,7 @@ public class MavenBuildProfile {
 
     private final Activation activation;
 
-    MavenBuildProfile(Builder builder) {
+    MavenProfile(Builder builder) {
         this.id = builder.id;
         this.mavenBuild = builder.mavenBuild;
         this.activation = (builder.activation == null) ? null : builder.activation.build();
@@ -83,8 +83,8 @@ public class MavenBuildProfile {
 			return this;
 		}
 
-        public MavenBuildProfile build() {
-            return new MavenBuildProfile(this);
+        public MavenProfile build() {
+            return new MavenProfile(this);
         }
 
     }

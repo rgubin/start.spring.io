@@ -307,7 +307,7 @@ public class MavenBuildWriter {
 		writeCollectionElement(writer, "profiles", build.buildProfiles(), this::writeProfile);
 	}
 
-	private void writeProfile(IndentingWriter writer, MavenBuildProfile profile) {
+	private void writeProfile(IndentingWriter writer, MavenProfile profile) {
 		if (!profile.isEmpty()) {
 			writeElement(writer, "profile", () -> {
 				writeSingleElement(writer, "id", profile.getId());
@@ -319,7 +319,7 @@ public class MavenBuildWriter {
 		}
 	}
 
-	private void writeActivation(IndentingWriter writer, MavenBuildProfile.Activation activation) {
+	private void writeActivation(IndentingWriter writer, MavenProfile.Activation activation) {
 		writeElement(writer, "activation", () -> {
 				writeSingleElement(writer, "activeByDefault", Boolean.toString(activation.isActiveByDefault()));
 				writeSingleElement(writer, "jdk", activation.getJdk());
@@ -327,7 +327,7 @@ public class MavenBuildWriter {
 		});
 	}
 
-	private void writeOs(IndentingWriter writer, MavenBuildProfile.ActivationOS os) {
+	private void writeOs(IndentingWriter writer, MavenProfile.ActivationOS os) {
 		if (os != null && !os.isEmpty()) {
 			writeElement(writer, "os", () -> {
 				writeSingleElement(writer, "name", os.getName());

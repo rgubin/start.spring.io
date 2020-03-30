@@ -25,7 +25,7 @@ import io.spring.initializr.metadata.InitializrConfiguration.Env.Maven.ParentPom
 import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.support.MetadataBuildItemMapper;
 import io.spring.start.site.buildsystem.maven2.MavenBuild;
-import io.spring.start.site.buildsystem.maven2.MavenBuildProfile;
+import io.spring.start.site.buildsystem.maven2.MavenProfile;
 import io.spring.start.site.buildsystem.maven2.MavenPlugin;
 
 import java.util.function.Consumer;
@@ -80,7 +80,7 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 		build.plugins().add("org.apache.maven.plugins", "maven-surefire-plugin", surefirePlugin -> {
 			surefirePlugin.version("2.22.2");
 			surefirePlugin.configuration(config ->
-					config.addConfigure("excludes", excludes -> {
+					config.configure("excludes", excludes -> {
 						excludes.add("exclude", "**/*Tests.java");
 					}));
 		});
@@ -89,7 +89,7 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 			dockerPlugin.version("0.33.0");
 			dockerPlugin.configuration(config ->
 					config.configure("images", images -> {
-						images.addConfigure("image", image -> {
+						images.configure("image", image -> {
 							image.add("name", "postgres:10");
 							image.add("alias", "db");
 							image.configure("run", run -> {
@@ -106,9 +106,7 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 													port -> port.add("port", "5432")));
 									wait.add("time", "20000");
 								});
-								run.configure("log", log -> {
-									log.add("color", "green");
-								});
+								run.configure("log", log -> log.add("color", "green"));
 							});
 						});
 					}));
@@ -118,7 +116,7 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 
 		MavenBuild profileBuild = new MavenBuild();
 		profileBuild.plugins().add("io.fabric8", "docker-maven-plugin", dockerPluginConsumer);
-		MavenBuildProfile profile = new MavenBuildProfile.Builder()
+		MavenProfile profile = new MavenProfile.Builder()
 				.id("pg-docker")
 				.activation(a->a.activeByDefault(false))
 				.mavenBuild(profileBuild)
