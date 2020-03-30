@@ -1,6 +1,9 @@
 package {{packageName}}.integration;
 
 import org.junit.jupiter.api.BeforeEach;
+{{^useActuator}}
+import org.junit.jupiter.api.Disabled;
+{{/useActuator}}
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

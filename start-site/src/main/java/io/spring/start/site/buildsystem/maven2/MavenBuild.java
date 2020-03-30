@@ -42,7 +42,7 @@ public class MavenBuild extends Build {
 
 	private final MavenDistributionManagement.Builder distributionManagement = new MavenDistributionManagement.Builder();
 
-	private final List<MavenBuildProfile> profiles = new ArrayList<MavenBuildProfile>();
+	private final List<MavenProfile> profiles = new ArrayList<MavenProfile>();
 
 	public MavenBuild(BuildItemResolver buildItemResolver) {
 		super(buildItemResolver);
@@ -62,7 +62,7 @@ public class MavenBuild extends Build {
 		return this.settings.build();
 	}
 
-	public List<MavenBuildProfile> buildProfiles() {
+	public List<MavenProfile> buildProfiles() {
 		return this.profiles;
 	}
 

@@ -62,26 +62,6 @@ const SideLeft = () => {
               </span>
             </button>
           </div>
-          <div className='social'>
-            <a
-              rel='noreferrer noopener'
-              target='_blank'
-              href='https://github.com/spring-io/start.spring.io'
-            >
-              <span className='a-content' tabIndex='-1'>
-                <IconGithub />
-              </span>
-            </a>
-            <a
-              rel='noreferrer noopener'
-              target='_blank'
-              href='https://twitter.com/springboot'
-            >
-              <span className='a-content' tabIndex='-1'>
-                <IconTwitter />
-              </span>
-            </a>
-          </div>
         </div>
       </div>
       <TransitionGroup component={null}>

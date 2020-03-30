@@ -308,14 +308,6 @@ public class MavenPlugin {
 			return this;
 		}
 
-		public ConfigurationBuilder addConfigure(String name, Consumer<ConfigurationBuilder> consumer) {
-			ConfigurationBuilder value = new ConfigurationBuilder();
-			Setting setting = new Setting(name, value);
-			this.settings.add(setting);
-			consumer.accept(value);
-			return this;
-		}
-
 		/**
 		 * Build a {@link Configuration} with the current state of this builder.
 		 * @return a {@link Configuration}
