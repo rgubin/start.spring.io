@@ -1,23 +1,23 @@
 {
   "_links": {
     "maven-project": {
-      "href": "http://localhost:9090/starter.zip?type=maven-project{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+      "href": "https://start.spring.io/starter.zip?type=maven-project{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
       "templated": true
     },
     "maven-build": {
-      "href": "http://localhost:9090/pom.xml?type=maven-build{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+      "href": "https://start.spring.io/pom.xml?type=maven-build{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
       "templated": true
     },
     "gradle-project": {
-      "href": "http://localhost:9090/starter.zip?type=gradle-project{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+      "href": "https://start.spring.io/starter.zip?type=gradle-project{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
       "templated": true
     },
     "gradle-build": {
-      "href": "http://localhost:9090/build.gradle?type=gradle-build{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
+      "href": "https://start.spring.io/build.gradle?type=gradle-build{&dependencies,packaging,javaVersion,language,bootVersion,groupId,artifactId,version,name,description,packageName}",
       "templated": true
     },
     "dependencies": {
-      "href": "http://localhost:9090/dependencies{?bootVersion}",
+      "href": "https://start.spring.io/dependencies{?bootVersion}",
       "templated": true
     }
   },
@@ -25,7 +25,7 @@
     "type": "hierarchical-multi-select",
     "values": [
       {
-        "name": "XDeveloper Tools",
+        "name": "Developer Tools",
         "values": [
           {
             "id": "devtools",
@@ -41,7 +41,7 @@
           {
             "id": "lombok",
             "name": "Lombok",
-            "description": "AAAAAAAAAAAAAJava annotation library which helps to reduce boilerplate code."
+            "description": "Java annotation library which helps to reduce boilerplate code."
           },
           {
             "id": "configuration-processor",
@@ -411,7 +411,7 @@
             "description": "Liquibase database migration and source control library.",
             "_links": {
               "reference": {
-                "href": "https://localhost/spring-boot/docs/{bootVersion}/reference/htmlsingle/#howto-execute-liquibase-database-migrations-on-startup",
+                "href": "https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#howto-execute-liquibase-database-migrations-on-startup",
                 "templated": true
               }
             }
