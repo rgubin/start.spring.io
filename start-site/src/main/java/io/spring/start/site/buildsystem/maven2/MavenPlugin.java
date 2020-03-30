@@ -312,8 +312,7 @@ public class MavenPlugin {
 			ConfigurationBuilder value = new ConfigurationBuilder();
 			Setting setting = new Setting(name, value);
 			this.settings.add(setting);
-			ConfigurationBuilder nestedConfiguration = value;
-			consumer.accept(nestedConfiguration);
+			consumer.accept(value);
 			return this;
 		}
 

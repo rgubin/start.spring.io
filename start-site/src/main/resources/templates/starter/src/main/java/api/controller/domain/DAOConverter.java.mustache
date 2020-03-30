@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 @Component
 public class DAOConverter {
     @Autowired
@@ -21,7 +22,6 @@ public class DAOConverter {
         }
         DAOConverterVisitor v = new DAOConverterVisitor(this);
         object.accept(v);
-        //noinspection unchecked
         return (T) v.getResult();
     }
 
@@ -36,7 +36,6 @@ public class DAOConverter {
         List<T> res = new ArrayList<>(objects.size());
         for (DAObject object : objects) {
             object.accept(v);
-            //noinspection unchecked
             res.add((T) v.getResult());
         }
         return res;

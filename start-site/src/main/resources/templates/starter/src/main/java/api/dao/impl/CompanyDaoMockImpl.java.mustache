@@ -3,16 +3,15 @@ package {{packageName}}.api.dao.impl;
 import {{packageName}}.api.dao.CompanyDao;
 import {{packageName}}.api.dao.data.Company;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@ConditionalOnProperty(value = "spring.datasource.enabled", havingValue = "false")
+@ConditionalOnProperty(value = "use-datasource", havingValue = "false")
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CompanyDaoMockImpl implements CompanyDao {
     @Override

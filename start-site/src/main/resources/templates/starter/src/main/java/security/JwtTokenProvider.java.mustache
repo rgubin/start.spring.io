@@ -24,6 +24,7 @@ import static {{packageName}}.configuration.SecurityConfig.OAUTH2_AUTHORITY;
 public class JwtTokenProvider {
 
     public static final String HEADER_AUTHORIZATION = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
 
     public Authentication getAuthentication(String token) {
         DecodedJWT jwt = JWT.decode(token);
@@ -36,7 +37,7 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader(HEADER_AUTHORIZATION);
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
             return bearerToken.substring(7);
         }
         return null;

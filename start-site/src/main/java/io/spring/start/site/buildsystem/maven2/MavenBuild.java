@@ -20,6 +20,9 @@ import io.spring.initializr.generator.buildsystem.Build;
 import io.spring.initializr.generator.buildsystem.BuildItemResolver;
 import io.spring.initializr.generator.buildsystem.MavenRepositoryContainer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Maven-specific {@linkplain Build build configuration}.
@@ -39,6 +42,8 @@ public class MavenBuild extends Build {
 
 	private final MavenDistributionManagement.Builder distributionManagement = new MavenDistributionManagement.Builder();
 
+	private final List<MavenBuildProfile> profiles = new ArrayList<MavenBuildProfile>();
+
 	public MavenBuild(BuildItemResolver buildItemResolver) {
 		super(buildItemResolver);
 	}
@@ -55,6 +60,10 @@ public class MavenBuild extends Build {
 	@Override
 	public MavenBuildSettings getSettings() {
 		return this.settings.build();
+	}
+
+	public List<MavenBuildProfile> buildProfiles() {
+		return this.profiles;
 	}
 
 	/**

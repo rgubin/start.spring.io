@@ -59,6 +59,7 @@ public class MavenBuildWriter {
 			writeProperties(writer, build.properties());
 			writeDependencies(writer, build);
 			writeDependencyManagement(writer, build);
+			writeProfiles(writer, build);
 			writeBuild(writer, build);
 			writeRepositories(writer, build);
 			writeDistributionManagement(writer, build);
@@ -300,6 +301,41 @@ public class MavenBuildWriter {
 			writeCollectionElement(writer, "plugins", build.plugins().values(), this::writePlugin);
 
 		});
+	}
+
+	private void writeProfiles(IndentingWriter writer, MavenBuild build) {
+		writeCollectionElement(writer, "profiles", build.buildProfiles(), this::writeProfile);
+	}
+
+	private void writeProfile(IndentingWriter writer, MavenBuildProfile profile) {
+		if (!profile.isEmpty()) {
+			writeElement(writer, "profile", () -> {
+				writeSingleElement(writer, "id", profile.getId());
+				if (profile.getActivation() != null && !profile.getActivation().isEmpty()) {
+					writeActivation(writer, profile.getActivation());
+				}
+				writeBuild(writer, profile.getMavenBuild());
+			});
+		}
+	}
+
+	private void writeActivation(IndentingWriter writer, MavenBuildProfile.Activation activation) {
+		writeElement(writer, "activation", () -> {
+				writeSingleElement(writer, "activeByDefault", Boolean.toString(activation.isActiveByDefault()));
+				writeSingleElement(writer, "jdk", activation.getJdk());
+				writeOs(writer, activation.getOs());
+		});
+	}
+
+	private void writeOs(IndentingWriter writer, MavenBuildProfile.ActivationOS os) {
+		if (os != null && !os.isEmpty()) {
+			writeElement(writer, "os", () -> {
+				writeSingleElement(writer, "name", os.getName());
+				writeSingleElement(writer, "family", os.getFamily());
+				writeSingleElement(writer, "arch", os.getArch());
+				writeSingleElement(writer, "version", os.getVersion());
+			});
+		}
 	}
 
 	private void writeResources(IndentingWriter writer, MavenBuild build) {

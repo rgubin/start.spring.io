@@ -22,7 +22,6 @@ import io.spring.initializr.generator.spring.build.BuildCustomizer;
 import io.spring.start.site.buildsystem.maven2.MavenBuild;
 import io.spring.start.site.buildsystem.maven2.MavenPlugin;
 
-import java.util.ArrayList;
 import java.util.function.Consumer;
 
 /**
@@ -49,28 +48,35 @@ public class MavenDockerBuildCustomizer implements BuildCustomizer<MavenBuild> {
                     config.configure("buildArgs", args -> args.add("JAR_FILE", jarFile)));
         });
 
-        build.plugins().add("io.fabric8", "docker-maven-plugin", dockerPlugin ->
-                dockerPlugin.configuration(config ->
-                        config.configure("images", images -> {
-                           images.addConfigure("image", image -> {
-                                image.add("name", "postgres:10");
-                                image.add("alias", "db");
-                                image.configure("run", naming -> {
-                                    naming.add("namingStrategy", "alias");
-                                    naming.configure("env", env -> {
-                                        env.add("POSTGRES_DB", build.getSettings().getName() + "-db");
-                                        env.add("POSTGRES_USER", "porta");
-                                        env.add("POSTGRES_PASSWORD", "porta");
-                                    });
+        Consumer<MavenPlugin.Builder> dockerPluginConsumer = dockerPlugin -> {
+            dockerPlugin.version("0.33.0");
+            dockerPlugin.configuration(config ->
+                    config.configure("images", images -> {
+                        images.addConfigure("image", image -> {
+                            image.add("name", "postgres:10");
+                            image.add("alias", "db");
+                            image.configure("run", run -> {
+                                run.add("namingStrategy", "alias");
+                                run.configure("env", env -> {
+                                    env.add("POSTGRES_DB", build.getSettings().getName() + "-db");
+                                    env.add("POSTGRES_USER", "porta");
+                                    env.add("POSTGRES_PASSWORD", "porta");
                                 });
-
+                                run.configure("wait", wait -> {
+                                    wait.configure("tcp", tcp ->
+                                            tcp.configure("ports",
+                                                    port -> port.add("port", "5432")));
+                                    wait.add("time", "20000");
+                                });
+                                run.configure("log", log -> {
+                                    log.add("color", "cyan");
+                                });
                             });
-                           images.addConfigure("image", image -> {
-                                image.add("name", "postgres:110");
-                                image.add("alias", "db");
-
-                            });
-                        })));
-
+                        });
+                    }));
+            dockerPlugin.execution("start", execution -> execution.phase("pre-integration-test").goal("stop").goal("start"));
+            dockerPlugin.execution("stop", execution -> execution.phase("post-integration-test").goal("stop"));
+        };
+        build.plugins().add("io.fabric8", "docker-maven-plugin", dockerPluginConsumer);
     }
 }
