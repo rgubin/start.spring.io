@@ -4,7 +4,6 @@ logging:
     org.springframework.jndi: warn
 
 server:
-  port: 9090
   compression:
     enabled: true
     mime-types: application/json,text/css,text/html
@@ -21,127 +20,6 @@ spring:
   task:
     execution:
       thread-name-prefix: initializr-
-
-custom:
-  initializr:
-    dependencies:
-      - name: Custom Dependencies
-        content:
-          - name: Swagger Annotations
-            id: swagger2
-            groupId: io.springfox
-            artifactId: springfox-swagger2
-            version: 2.9.2
-            description: JSON API documentation for spring based applications.
-            starter: false
-            links:
-              - rel: reference
-                href: https://springfox.github.io/springfox/docs/current/
-                description: Springfox Reference Documentation
-initializr1:
-  dependencies:
-    - name: Required for RP KickStarter
-      content:
-        - name: Swagger Annotations
-          id: swagger2
-          groupId: io.springfox
-          artifactId: springfox-swagger2
-          version: 2.9.2
-          description: JSON API documentation for spring based applications.
-          starter: false
-          links:
-            - rel: reference
-              href: https://springfox.github.io/springfox/docs/current/
-              description: Springfox Reference Documentation
-        - name: Swagger UI
-          id: swagger-ui
-          groupId: io.springfox
-          artifactId: springfox-swagger-ui
-          version: 2.9.2
-          description: Swagger Web UI for JSON API documentation for spring based applications
-          starter: false
-        - name: Lombok
-          id: lombok
-          groupId: org.projectlombok
-          artifactId: lombok
-          scope: annotationProcessor
-          description: Java annotation library which helps to reduce boilerplate code.
-          starter: false
-        - name: Java-Jwt
-          id: java-jwt
-          groupId: com.auth0
-          artifactId: java-jwt
-          version: 3.10.1
-          description: Java jwt library.
-          starter: false
-        - name: Spring Web
-          id: web
-          description: Build web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container.
-          facets:
-            - web
-            - json
-          links:
-            - rel: guide
-              href: https://spring.io/guides/gs/rest-service/
-              description: Building a RESTful Web Service
-            - rel: reference
-              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-developing-web-applications
-            - rel: guide
-              href: https://spring.io/guides/gs/serving-web-content/
-              description: Serving Web Content with Spring MVC
-            - rel: guide
-              href: https://spring.io/guides/tutorials/bookmarks/
-              description: Building REST services with Spring
-        - name: Spring Boot Actuator
-          id: actuator
-          description: Supports built in (or custom) endpoints that let you monitor and manage your application - such as application health, metrics, sessions, etc.
-          links:
-            - rel: guide
-              href: https://spring.io/guides/gs/actuator-service/
-              description: Building a RESTful Web Service with Spring Boot Actuator
-            - rel: reference
-              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#production-ready
-        - name: Spring Security
-          id: security
-          description: Highly customizable authentication and access-control framework for Spring applications.
-          links:
-            - rel: guide
-              href: https://spring.io/guides/gs/securing-web/
-              description: Securing a Web Application
-            - rel: guide
-              href: https://spring.io/guides/tutorials/spring-boot-oauth2/
-              description: Spring Boot and OAuth2
-            - rel: guide
-              href: https://spring.io/guides/gs/authenticating-ldap/
-              description: Authenticating a User with LDAP
-            - rel: reference
-              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-security
-        - name: Spring Data JDBC
-          id: data-jdbc
-          compatibilityRange: "2.1.0.RELEASE"
-          description: Persist data in SQL stores with plain JDBC using Spring Data.
-          links:
-            - rel: guide
-              href: https://github.com/spring-projects/spring-data-examples/tree/master/jdbc/basics
-              description: Using Spring Data JDBC
-            - rel: reference
-              href: https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/
-        - name: Liquibase Migration
-          id: liquibase
-          description: Liquibase database migration and source control library.
-          groupId: org.liquibase
-          artifactId: liquibase-core
-          starter: false
-          links:
-            - rel: reference
-              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#howto-execute-liquibase-database-migrations-on-startup
-        - name: PostgreSQL Driver
-          id: postgresql
-          description: A JDBC and R2DBC driver that allows Java programs to connect to a PostgreSQL database using standard, database independent Java code.
-          groupId: org.postgresql
-          artifactId: postgresql
-          scope: runtime
-          starter: false
 
 initializr:
   env:
@@ -461,35 +339,35 @@ initializr:
           id: web-services
           description: Facilitates contract-first SOAP development. Allows for the creation of flexible web services using one of the many ways to manipulate XML payloads.
           aliases:
-            - ws
+           - ws
           links:
-            - rel: guide
-              href: https://spring.io/guides/gs/producing-web-service/
-              description: Producing a SOAP web service
-            - rel: reference
-              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-webservices
+           - rel: guide
+             href: https://spring.io/guides/gs/producing-web-service/
+             description: Producing a SOAP web service
+           - rel: reference
+             href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-webservices
         - name: Jersey
           id: jersey
           description: Framework for developing RESTful Web Services in Java that provides support for JAX-RS APIs.
           facets:
-            - json
+           - json
           links:
-            - rel: reference
-              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-jersey
+           - rel: reference
+             href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-jersey
         - name: Vaadin
           id: vaadin
           facets:
-            - web
+           - web
           groupId: com.vaadin
           artifactId: vaadin-spring-boot-starter
           description: Java framework for building rich client apps based on Web components.
           bom: vaadin
           links:
-            - rel: guide
-              href: https://spring.io/guides/gs/crud-with-vaadin/
-              description: Creating CRUD UI with Vaadin
-            - rel: reference
-              href: https://vaadin.com/spring
+           - rel: guide
+             href: https://spring.io/guides/gs/crud-with-vaadin/
+             description: Creating CRUD UI with Vaadin
+           - rel: reference
+             href: https://vaadin.com/spring
     - name: Template Engines
       content:
         - name: Thymeleaf
@@ -592,16 +470,6 @@ initializr:
               description: Accessing Data with JPA
             - rel: reference
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-jpa-and-spring-data
-        - name: Spring Data JDBC
-          id: data-jdbc
-          compatibilityRange: "2.1.0.RELEASE"
-          description: Persist data in SQL stores with plain JDBC using Spring Data.
-          links:
-            - rel: guide
-              href: https://github.com/spring-projects/spring-data-examples/tree/master/jdbc/basics
-              description: Using Spring Data JDBC
-            - rel: reference
-              href: https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/
         - name: Spring Data R2DBC
           id: data-r2dbc
           compatibilityRange: "2.3.0.M3"
