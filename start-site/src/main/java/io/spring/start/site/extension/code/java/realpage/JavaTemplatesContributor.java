@@ -85,6 +85,9 @@ public class JavaTemplatesContributor implements ProjectContributor {
 			write(new File(
 					mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenProvider").toString()),
 					"starter/src/main/java/security/JwtTokenProvider.java", model);
+			write(new File(
+					mainSource.createSourceFile(model.get("packageName") + ".security", "AppMDCFilter").toString()),
+					"starter/src/main/java/security/AppMDCFilter.java", model);
 		}
 		write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "ApplicationConfig")
 				.toString()), "starter/src/main/java/configuration/ApplicationConfig.java", model);

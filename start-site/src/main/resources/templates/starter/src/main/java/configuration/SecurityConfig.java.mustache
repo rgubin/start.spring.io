@@ -1,7 +1,10 @@
 package {{packageName}}.configuration;
 
+import {{packageName}}.security.AppMDCFilter;
 import {{packageName}}.security.JwtConfigurer;
 import {{packageName}}.security.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,16 +28,15 @@ import java.util.Arrays;
         securedEnabled = true,
         jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     public static final String OAUTH2_AUTHORITY = "ROLE_OAUTH2";
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
     private final JwtTokenProvider jwtTokenProvider;
+    @Value("${cors.origins:}")
+    private String corsOrigins;
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
-    @Value("${cors.origins:}")
-    private String corsOrigins;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -43,11 +46,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
+        http.addFilterAfter(new AppMDCFilter(), FilterSecurityInterceptor.class);
     }
 
     @Bean
     @ConditionalOnProperty(value="cors.origins")
     CorsConfigurationSource corsConfigurationSource() {
+        logger.debug("Enabling CORS: {}", corsOrigins);
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(corsOrigins.split(",")));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

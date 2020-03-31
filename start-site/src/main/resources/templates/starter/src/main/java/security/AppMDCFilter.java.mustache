@@ -1,0 +1,54 @@
+package {{packageName}}.security;
+
+import ch.qos.logback.classic.ClassicConstants;
+import org.slf4j.MDC;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.Principal;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+public class AppMDCFilter extends OncePerRequestFilter {
+    public static final String ATTR_REQUEST_ID = "request_id";
+    public static final String MDC_REQUEST_ID = "request";
+    public static final String MDC_REQUEST_START = "start";
+
+    private static final DateTimeFormatter TIME = DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneOffset.UTC);
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain chain) throws ServletException, IOException {
+        fillMDC(request);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            clearMDC();
+        }
+    }
+
+    private void fillMDC(ServletRequest request) {
+        UUID requestId = UUID.randomUUID();
+        if (request instanceof HttpServletRequest) {
+            HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+            request.setAttribute(ATTR_REQUEST_ID, requestId);
+            Principal userPrincipal = httpServletRequest.getUserPrincipal();
+            MDC.put(ClassicConstants.USER_MDC_KEY, userPrincipal == null ? "anonymous" : userPrincipal.getName());
+        }
+        MDC.put(MDC_REQUEST_ID, requestId.toString());
+        MDC.put(MDC_REQUEST_START, TIME.format(Instant.ofEpochMilli(System.currentTimeMillis())));
+    }
+
+    private void clearMDC() {
+        MDC.remove(ClassicConstants.USER_MDC_KEY);
+        MDC.remove(MDC_REQUEST_ID);
+        MDC.remove(MDC_REQUEST_START);
+    }
+}
