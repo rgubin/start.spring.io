@@ -1,6 +1,8 @@
 package {{packageName}}.configuration;
 
 import liquibase.integration.spring.SpringLiquibase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 public class DataSourceConfig {
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
 
     @Bean
     @ConditionalOnProperty(value = "use-datasource", matchIfMissing = true)
@@ -30,6 +33,7 @@ public class DataSourceConfig {
     @Bean
     @ConditionalOnProperty(value = "use-datasource", havingValue = "false")
     public SpringLiquibase liquibase() {
+        logger.debug("Turning off liquibase migrations");
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setShouldRun(false);
         return liquibase;

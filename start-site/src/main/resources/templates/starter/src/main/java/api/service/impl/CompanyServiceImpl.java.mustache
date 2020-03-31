@@ -5,6 +5,8 @@ import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
 import {{packageName}}.api.controller.dto.CompanyDto;
 import {{packageName}}.api.dao.CompanyDao;
 import {{packageName}}.api.service.CompanyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @Service("companyService")
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CompanyServiceImpl implements CompanyService {
+    private static final Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
     private final DAOConverter converter;
     private final CompanyDao companyDao;
 
@@ -26,6 +29,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyDto> getCompanyList() {
+        logger.debug("Got into getCompanyList()");
         return converter.convert(companyDao.getCompanies());
     }
 
