@@ -1,0 +1,20 @@
+package {{packageName}}.api.service;
+
+import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
+import {{packageName}}.api.controller.dto.CompanyDto;
+import {{packageName}}.api.controller.dto.CompanyUpdateRequestDto;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface CompanyService {
+    List<CompanyDto> getCompanyList();
+
+    CompanyDto getCompany(UUID companyId);
+
+    CompanyDto createCompany(CompanyCreateRequestDto company);
+
+    CompanyDto updateCompany(CompanyUpdateRequestDto company);
+
+    void deleteCompany(UUID companyId);
+}

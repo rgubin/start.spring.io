@@ -1,0 +1,80 @@
+package {{packageName}}.service.impl;
+
+import {{packageName}}.api.controller.domain.DAOConverter;
+import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
+import {{packageName}}.api.controller.dto.CompanyDto;
+import {{packageName}}.api.controller.dto.CompanyUpdateRequestDto;
+import {{packageName}}.api.dao.CompanyDao;
+import {{packageName}}.api.dao.data.Company;
+import {{packageName}}.api.service.impl.CompanyServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public class CompanyServiceImplTest {
+
+    @Mock
+    private CompanyDao dao;
+    @Mock
+    private DAOConverter converter;
+
+    private CompanyServiceImpl service;
+
+    @BeforeEach
+    public void setUp() {
+        service = new CompanyServiceImpl(converter, dao);
+    }
+
+    @Test
+    public void get_company_throws_exception() {
+        assertThrows(UnsupportedOperationException.class, () -> service.getCompany(UUID.randomUUID()));
+    }
+
+    @Test
+    public void get_company_list_delegates_to_dao() {
+        //given
+        UUID id = UUID.randomUUID();
+        Company company = new Company.Builder().id(id).build();
+        when(dao.getCompanies()).thenReturn(Collections.singletonList(company));
+        CompanyDto expected = new CompanyDto();
+        expected.setId(id);
+        when(converter.convert(Collections.singletonList(company))).thenReturn(Collections.singletonList(expected));
+        //when
+        List<CompanyDto> actual = service.getCompanyList();
+        //then
+        assertEquals(1, actual.size());
+        assertEquals(expected, actual.get(0));
+        verify(dao).getCompanies();
+        verifyNoMoreInteractions(dao);
+        verify(converter).convert(Collections.singletonList(company));
+        verifyNoMoreInteractions(converter);
+    }
+
+    @Test
+    public void create_company_throws_exception() {
+        assertThrows(UnsupportedOperationException.class, () -> service.createCompany(new CompanyCreateRequestDto()));
+    }
+
+    @Test
+    public void update_company_throws_exception() {
+        assertThrows(UnsupportedOperationException.class, () -> service.updateCompany(new CompanyUpdateRequestDto()));
+    }
+
+    @Test
+    public void delete_company_throws_exception() {
+        assertThrows(UnsupportedOperationException.class, () -> service.deleteCompany(UUID.randomUUID()));
+    }
+}

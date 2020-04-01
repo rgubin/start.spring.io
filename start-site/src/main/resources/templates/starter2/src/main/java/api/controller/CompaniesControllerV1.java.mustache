@@ -1,0 +1,22 @@
+package {{packageName}}.api.controller;
+
+import {{packageName}}.api.service.CompanyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static {{packageName}}.configuration.ApplicationConfig.API_VERSION_1;
+
+@RestController
+@RequestMapping(value = API_VERSION_1)
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class CompaniesControllerV1 extends AbstractCompaniesControllerApi {
+
+    @Autowired
+    public CompaniesControllerV1(@Qualifier("companyServiceV1") CompanyService companyService) {
+        super(companyService);
+    }
+}

@@ -111,11 +111,41 @@ public class DefaultMavenBuildCustomizer implements BuildCustomizer<MavenBuild> 
 			dockerPlugin.execution("stop", execution -> execution.phase("post-integration-test").goal("stop"));
 		};
 
-		MavenBuild profileBuild = new MavenBuild();
-		profileBuild.plugins().add("io.fabric8", "docker-maven-plugin", dockerPluginConsumer);
-		MavenProfile profile = new MavenProfile.Builder().id("pg-docker").activation(a -> a.activeByDefault(false))
-				.mavenBuild(profileBuild).build();
-		build.buildProfiles().add(profile);
+		MavenBuild postgresProfileBuild = new MavenBuild();
+		postgresProfileBuild.plugins().add("io.fabric8", "docker-maven-plugin", dockerPluginConsumer);
+		MavenProfile postgresProfile = new MavenProfile.Builder().id("pg-docker")
+				.activation(a -> a.activeByDefault(false)).mavenBuild(postgresProfileBuild).build();
+		build.buildProfiles().add(postgresProfile);
+
+		// hardcoded 4 starter2 template
+		String packageName = description.getPackageName();
+		MavenBuild codeGenApiBuild = new MavenBuild();
+		Consumer<MavenPlugin.Builder> swaggerCodeGenConsumer = swaggerCodeGenPlugin -> {
+			swaggerCodeGenPlugin.version("3.0.8");
+			swaggerCodeGenPlugin.execution("generate-model", exec -> {
+				exec.goal("generate");
+				exec.configuration(config -> config.add("inputSpec", "${basedir}/src/main/resources/api/swagger.yml")
+						.add("output", "${basedir}/target/generated-sources").add("language", "spring")
+						.add("modelPackage", packageName + ".api.controller.dto")
+						.add("generateSupportingFiles", "false").add("generateModels", "true")
+						.add("generateApis", "false").configure("configOptions", options -> options
+								.add("dateLibrary", "java8").add("java8", "true").add("library", "spring-boot")));
+			});
+			swaggerCodeGenPlugin.execution("generate-api", exec -> {
+				exec.goal("generate");
+				exec.configuration(config -> config.add("inputSpec", "${basedir}/src/main/resources/api/swagger.yml")
+						.add("output", "${basedir}/target/generated-sources").add("language", "spring")
+						.add("modelPackage", packageName + ".api.controller.dto")
+						.add("apiPackage", packageName + ".generated.api").add("generateSupportingFiles", "false")
+						.add("generateModels", "false").add("generateApis", "true").add("generateApiTests", "false")
+						.configure("configOptions", options -> options.add("interfaceOnly", "true")
+								.add("java8", "false").add("library", "spring-boot").add("useTags", "true")));
+			});
+		};
+		codeGenApiBuild.plugins().add("io.swagger.codegen.v3", "swagger-codegen-maven-plugin", swaggerCodeGenConsumer);
+		MavenProfile codeGenProfile = new MavenProfile.Builder().id("code-generation-api")
+				.activation(a -> a.activeByDefault(false)).mavenBuild(codeGenApiBuild).build();
+		build.buildProfiles().add(codeGenProfile);
 	}
 
 	private boolean hasBom(MavenBuild build, BillOfMaterials bom) {

@@ -1,0 +1,236 @@
+swagger: '2.0'
+info:
+  description: Java API Starter Kit
+  version: '1.0'
+  title: This is Java API Starter Kit server documentation
+  termsOfService: 'urn:tos'
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+host: 'localhost:44334'
+schemes:
+  - https
+basePath: /rest
+tags:
+  - name: CompaniesController
+    description: Java SpringBoot Kick Starter API - companies controller
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /companies:
+    get:
+      tags:
+        - CompaniesController
+      summary: Get Companies
+      description: Gets a list of all companies.
+      operationId: getCompanies
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Companies retrieved successfully
+          schema:
+            $ref: '#/definitions/CompanyResultDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - OAuth2Implicit:
+            - api
+      deprecated: false
+    post:
+      tags:
+        - CompaniesController
+      summary: Create company
+      description: Create new company.
+      operationId: createCompany
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: companyDto
+          description: companyDto
+          required: false
+          schema:
+            $ref: '#/definitions/CompanyCreateRequestDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CompanyDto'
+        '201':
+          description: Company created successfully
+          schema:
+            $ref: '#/definitions/CompanyDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - OAuth2Implicit:
+            - api
+      deprecated: false
+    put:
+      tags:
+        - CompaniesController
+      summary: Update company
+      description: Update existing company.
+      operationId: updateCompany
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: companyDto
+          description: companyDto
+          required: true
+          schema:
+            $ref: '#/definitions/CompanyUpdateRequestDto'
+      responses:
+        '200':
+          description: Company updated successfully
+          schema:
+            $ref: '#/definitions/CompanyDto'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Company not found
+      security:
+        - OAuth2Implicit:
+            - api
+      deprecated: false
+  '/companies/{id}':
+    get:
+      tags:
+        - CompaniesController
+      summary: Get Company
+      description: Get Company by id.
+      operationId: getCompany
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Company retrieved successfully
+          schema:
+            $ref: '#/definitions/CompanyDto'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Company not found
+      security:
+        - OAuth2Implicit:
+            - api
+      deprecated: false
+    delete:
+      tags:
+        - CompaniesController
+      summary: Delete company
+      description: Delete existing company.
+      operationId: deleteCompany
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Company deleted successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Company not found
+      security:
+        - OAuth2Implicit:
+            - api
+      deprecated: false
+securityDefinitions:
+  OAuth2Implicit:
+    type: oauth2
+    description: API Implicit authentication
+    authorizationUrl: 'https://www-dev.realpage.com/login/identity/connect/authorize'
+    flow: implicit
+    scopes:
+      api: API Authorization Scope
+definitions:
+  CompanyDto:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        description: Company Id
+      name:
+        type: string
+        description: Company Name
+      typeDescription:
+        type: string
+        description: Company Type Description
+      webSite:
+        type: string
+        description: Company WebSite
+    title: Company
+  CompanyCreateRequestDto:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Company Name
+      typeDescription:
+        type: string
+        description: Company Type Description
+      webSite:
+        type: string
+        description: Company WebSite
+    title: CompanyCreateRequest
+  CompanyResultDto:
+    type: object
+    properties:
+      companies:
+        type: array
+        description: Company Result
+        items:
+          $ref: '#/definitions/CompanyDto'
+    title: CompanyResult
+  CompanyUpdateRequestDto:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        description: Company Id
+      name:
+        type: string
+        description: Company Name
+      typeDescription:
+        type: string
+        description: Company Type Description
+      webSite:
+        type: string
+        description: Company WebSite
+    title: CompanyUpdateRequest

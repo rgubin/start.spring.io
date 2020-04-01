@@ -1,0 +1,150 @@
+package {{packageName}}.service.impl;
+
+import {{packageName}}.api.controller.domain.DAOConverter;
+import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
+import {{packageName}}.api.controller.dto.CompanyDto;
+import {{packageName}}.api.controller.dto.CompanyUpdateRequestDto;
+import {{packageName}}.api.dao.CompanyDao;
+import {{packageName}}.api.dao.data.Company;
+import {{packageName}}.api.service.impl.CompanyServiceV1Impl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public class CompanyServiceV1ImplTest {
+
+    @Mock
+    private CompanyDao dao;
+    @Mock
+    private DAOConverter converter;
+
+    private CompanyServiceV1Impl service;
+
+    @BeforeEach
+    public void setUp() {
+        service = new CompanyServiceV1Impl(converter, dao);
+    }
+
+    @Test
+    public void get_company_delegates_to_dao() {
+        //given
+        UUID id = UUID.randomUUID();
+        Company company = new Company.Builder().id(id).build();
+        when(dao.getCompany(id)).thenReturn(company);
+        CompanyDto expected = new CompanyDto();
+        expected.setId(id);
+        when(converter.convert(company)).thenReturn(expected);
+        //when
+        CompanyDto actual = service.getCompany(id);
+        //then
+        assertEquals(expected, actual);
+        verify(dao).getCompany(id);
+    }
+
+    @Test
+    public void get_company_list_delegates_to_dao() {
+        //given
+        UUID id = UUID.randomUUID();
+        Company company = new Company.Builder().id(id).build();
+        when(dao.getCompanies()).thenReturn(Collections.singletonList(company));
+        CompanyDto expected = new CompanyDto();
+        expected.setId(id);
+        when(converter.convert(Collections.singletonList(company))).thenReturn(Collections.singletonList(expected));
+        //when
+        List<CompanyDto> actual = service.getCompanyList();
+        //then
+        assertEquals(1, actual.size());
+        assertEquals(expected, actual.get(0));
+        verify(dao).getCompanies();
+        verifyNoMoreInteractions(dao);
+        verify(converter).convert(Collections.singletonList(company));
+        verifyNoMoreInteractions(converter);
+    }
+
+    @Test
+    public void create_company_delegates_to_dao() {
+        //given
+        UUID id = UUID.randomUUID();
+        Company company = new Company.Builder().id(id).build();
+        CompanyCreateRequestDto request = new CompanyCreateRequestDto();
+        request.setName("n");
+        request.setWebSite("w");
+        request.setTypeDescription("d");
+        ArgumentCaptor<Company> captor = ArgumentCaptor.forClass(Company.class);
+        when(dao.upsertCompany(captor.capture())).thenReturn(company);
+        CompanyDto expected = new CompanyDto();
+        expected.setId(id);
+        expected.setName("n");
+        expected.setWebSite("w");
+        expected.setTypeDescription("d");
+        when(converter.convert(company)).thenReturn(expected);
+        //when
+        CompanyDto actual = service.createCompany(request);
+        //then
+        assertEquals(expected, actual);
+        assertEquals("n", captor.getValue().getName());
+        assertEquals("w", captor.getValue().getWebSite());
+        assertEquals(0, (int) captor.getValue().getCompanyType());
+        assertNull(captor.getValue().getId());
+        verify(dao).upsertCompany(captor.getValue());
+        verifyNoMoreInteractions(dao);
+        verify(converter).convert(company);
+        verifyNoMoreInteractions(converter);
+    }
+
+    @Test
+    public void update_company_delegates_to_dao() {
+        //given
+        UUID id = UUID.randomUUID();
+        Company company = new Company.Builder().id(id).build();
+        CompanyUpdateRequestDto request = new CompanyUpdateRequestDto();
+        request.setId(id);
+        request.setName("n");
+        request.setWebSite("w");
+        request.setTypeDescription("d");
+        ArgumentCaptor<Company> captor = ArgumentCaptor.forClass(Company.class);
+        when(dao.upsertCompany(captor.capture())).thenReturn(company);
+        CompanyDto expected = new CompanyDto();
+        expected.setId(id);
+        expected.setName("n");
+        expected.setWebSite("w");
+        expected.setTypeDescription("d");
+        when(converter.convert(company)).thenReturn(expected);
+        //when
+        CompanyDto actual = service.updateCompany(request);
+        //then
+        assertEquals(expected, actual);
+        assertEquals("n", captor.getValue().getName());
+        assertEquals("w", captor.getValue().getWebSite());
+        assertEquals(0, (int) captor.getValue().getCompanyType());
+        assertEquals(id, captor.getValue().getId());
+        verify(dao).upsertCompany(captor.getValue());
+        verifyNoMoreInteractions(dao);
+        verify(converter).convert(company);
+        verifyNoMoreInteractions(converter);
+    }
+
+    @Test
+    public void delete_company_delegates_to_dao() {
+        //given
+        UUID id = UUID.randomUUID();
+        //when
+        service.deleteCompany(id);
+        //then
+        verify(dao).removeCompany(id);
+    }
+}

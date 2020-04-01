@@ -1,0 +1,105 @@
+package {{packageName}}.api.controller;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
+import {{packageName}}.api.controller.dto.CompanyDto;
+import {{packageName}}.api.controller.dto.CompanyUpdateRequestDto;
+import {{packageName}}.api.service.CompanyService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Collections;
+import java.util.UUID;
+
+import static {{packageName}}.configuration.ApplicationConfig.API_VERSION_1;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(MockitoExtension.class)
+public class CompaniesControllerV1Test {
+    @InjectMocks
+    private CompaniesControllerV1 controller;
+    @Mock
+    private CompanyService service;
+
+    private MockMvc mvc;
+
+    @BeforeEach
+    public void setUp() {
+        mvc = MockMvcBuilders.standaloneSetup((controller)).build();
+    }
+
+    @Test
+    public void get_companies_return_ok() throws Exception {
+        CompanyDto company = new CompanyDto();
+        when(service.getCompanyList()).thenReturn(Collections.singletonList(company));
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(API_VERSION_1 + "companies")
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+        assertNotNull(mvcResult);
+        verify(service).getCompanyList();
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    public void get_company_by_id_return_ok() throws Exception {
+        CompanyDto company = new CompanyDto();
+        UUID id = UUID.randomUUID();
+        when(service.getCompany(id)).thenReturn(company);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(API_VERSION_1 + "companies/" + id)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+        assertNotNull(mvcResult);
+        verify(service).getCompany(id);
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    public void post_company_return_create() throws Exception {
+        CompanyCreateRequestDto request = new CompanyCreateRequestDto();
+        String dtoStr = new ObjectMapper().writeValueAsString(request);
+        CompanyDto company = new CompanyDto();
+        when(service.createCompany(request)).thenReturn(company);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(API_VERSION_1 + "companies")
+                .content(dtoStr)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        assertNotNull(mvcResult);
+        verify(service).createCompany(request);
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    public void put_company_return_ok() throws Exception {
+        CompanyUpdateRequestDto request = new CompanyUpdateRequestDto();
+        String dtoStr = new ObjectMapper().writeValueAsString(request);
+        CompanyDto company = new CompanyDto();
+        when(service.updateCompany(request)).thenReturn(company);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(API_VERSION_1 + "companies")
+                .content(dtoStr)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+        assertNotNull(mvcResult);
+        verify(service).updateCompany(request);
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    public void delete_company_by_id_return_ok() throws Exception {
+        UUID id = UUID.randomUUID();
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(API_VERSION_1 + "companies/" + id)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+        assertNotNull(mvcResult);
+        verify(service).deleteCompany(id);
+        verifyNoMoreInteractions(service);
+    }
+}

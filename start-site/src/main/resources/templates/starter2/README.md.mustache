@@ -1,0 +1,65 @@
+# JAVA API STARTER KIT
+Starter kit for API in Java
+
+# Getting Started
+### Generate REST API
+The api specification in [swagger format](https://swagger.io/specification/) located in the `src/main/resources/api/swagger.yml`.
+To generate the java api for this specification, use the project build with the code-generation-api profile:
+```
+$ ./mvnw verify -P code-generation-api
+```
+
+After generating the api, it will appear in `target/generated-sources/`
+When developing controller, you need to implement generated api.
+
+### Build application
+Invoke the build at the root of the project
+```
+$ ./mvnw package
+```
+This will compile application, run unit-tests and package application as a docker image.
+### Run application
+To run local stack run first postgres database in docker
+```
+$ ./mvnw -Ppg-docker docker:start
+```
+Then you may start application using your IDE or from command line:
+```
+$ ./mvnw spring-boot:run
+```
+Or all together in one line:
+```
+$ ./mvnw -Ppg-docker docker:start spring-boot:run
+```
+
+After than you can access application using URL https://localhost:44334
+
+To stop the docker database, run:
+```
+$ ./mvnw -Ppg-docker docker:stop
+```
+### Mock DataSource
+To run application without real DataSource connection use `-Duse-datasource=false` VM argument.
+In case of using maven with spring boot use this form:
+```
+$ ./mvnw spring-boot:run -Dspring-boot.run.arguments=--use-datasource=false
+```
+
+### Run the tests
+To run unit tests type
+```
+$ ./mvnw test
+```
+To run all tests including integration tests type
+```
+$ ./mvnw verify
+```
+
+# Features
+{{#useActuator}}
+### Spring Boot Actuator
+Try visit http://localhost:8080/health
+{{/useActuator}}
+
+# Technologies used
+Refer to [HELP.md](HELP.md)
