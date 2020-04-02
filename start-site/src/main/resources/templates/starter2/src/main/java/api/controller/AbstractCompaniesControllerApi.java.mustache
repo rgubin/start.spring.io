@@ -1,0 +1,59 @@
+package {{packageName}}.api.controller;
+
+import {{packageName}}.api.controller.dto.CompanyCreateRequestDto;
+import {{packageName}}.api.controller.dto.CompanyDto;
+import {{packageName}}.api.controller.dto.CompanyResultDto;
+import {{packageName}}.api.controller.dto.CompanyUpdateRequestDto;
+import {{packageName}}.api.service.CompanyService;
+import {{packageName}}.configuration.SecurityConfig;
+import {{packageName}}.generated.api.CompaniesControllerApi;
+import io.swagger.annotations.Api;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+
+import javax.validation.Valid;
+import java.util.UUID;
+
+@Api(tags = "CompaniesController")
+public abstract class AbstractCompaniesControllerApi implements CompaniesControllerApi {
+
+    private final CompanyService companyService;
+
+    public AbstractCompaniesControllerApi(CompanyService companyService) {
+        this.companyService = companyService;
+    }
+
+    @Override
+    @Secured(SecurityConfig.OAUTH2_AUTHORITY)
+    public ResponseEntity<CompanyDto> createCompany(@Valid CompanyCreateRequestDto body) {
+        return new ResponseEntity<>(companyService.createCompany(body), HttpStatus.CREATED);
+    }
+
+    @Override
+    @Secured(SecurityConfig.OAUTH2_AUTHORITY)
+    public ResponseEntity<Void> deleteCompany(UUID id) {
+        companyService.deleteCompany(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    @Secured(SecurityConfig.OAUTH2_AUTHORITY)
+    public ResponseEntity<CompanyResultDto> getCompanies() {
+        CompanyResultDto dto = new CompanyResultDto();
+        dto.setCompanies(companyService.getCompanyList());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @Override
+    @Secured(SecurityConfig.OAUTH2_AUTHORITY)
+    public ResponseEntity<CompanyDto> getCompany(UUID id) {
+        return new ResponseEntity<>(companyService.getCompany(id), HttpStatus.OK);
+    }
+
+    @Override
+    @Secured(SecurityConfig.OAUTH2_AUTHORITY)
+    public ResponseEntity<CompanyDto> updateCompany(@Valid CompanyUpdateRequestDto body) {
+        return new ResponseEntity<>(companyService.updateCompany(body), HttpStatus.OK);
+    }
+}

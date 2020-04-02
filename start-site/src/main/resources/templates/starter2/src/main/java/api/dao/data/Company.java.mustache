@@ -1,0 +1,92 @@
+package {{packageName}}.api.dao.data;
+
+import {{packageName}}.api.dao.domain.DAOVisitor;
+import {{packageName}}.api.dao.domain.DAObject;
+
+import java.util.UUID;
+
+public class Company implements DAObject {
+    private UUID id;
+    private String name;
+    private String webSite;
+    private Integer companyType;
+
+    public Company(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.webSite = builder.webSite;
+        this.companyType = builder.companyType;
+    }
+
+    public Company() {
+
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getWebSite() {
+        return webSite;
+    }
+
+    public void setWebSite(String webSite) {
+        this.webSite = webSite;
+    }
+
+    public Integer getCompanyType() {
+        return companyType;
+    }
+
+    public void setCompanyType(Integer companyType) {
+        this.companyType = companyType;
+    }
+
+    @Override
+    public void accept(DAOVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public static class Builder {
+        private UUID id;
+        private String name;
+        private String webSite;
+        private Integer companyType;
+
+        public Builder id(UUID id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder webSite(String webSite) {
+            this.webSite = webSite;
+            return this;
+        }
+
+        public Builder companyType(Integer companyType) {
+            this.companyType = companyType;
+            return this;
+        }
+
+        public Company build() {
+            return new Company(this);
+        }
+    }
+}

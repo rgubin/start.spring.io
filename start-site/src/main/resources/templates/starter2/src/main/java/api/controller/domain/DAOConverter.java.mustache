@@ -1,0 +1,43 @@
+package {{packageName}}.api.controller.domain;
+
+import {{packageName}}.api.dao.domain.DAObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+@SuppressWarnings("unchecked")
+@Component
+public class DAOConverter {
+    @Autowired
+    public DAOConverter() {
+    }
+
+    public <T> T convert(DAObject object) {
+        if (object == null) {
+            return null;
+        }
+        DAOConverterVisitor v = new DAOConverterVisitor(this);
+        object.accept(v);
+        return (T) v.getResult();
+    }
+
+    public <T> List<T> convert(Collection<? extends DAObject> objects) {
+        if (objects == null) {
+            return Collections.emptyList();
+        }
+        if (objects.isEmpty()) {
+            return Collections.emptyList();
+        }
+        DAOConverterVisitor v = new DAOConverterVisitor(this);
+        List<T> res = new ArrayList<>(objects.size());
+        for (DAObject object : objects) {
+            object.accept(v);
+            res.add((T) v.getResult());
+        }
+        return res;
+    }
+}

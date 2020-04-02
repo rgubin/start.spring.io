@@ -1,0 +1,109 @@
+package {{packageName}}.configuration;
+
+import com.google.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.GrantType;
+import springfox.documentation.service.ImplicitGrant;
+import springfox.documentation.service.LoginEndpoint;
+import springfox.documentation.service.OAuth;
+import springfox.documentation.service.SecurityReference;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.Collections;
+import java.util.List;
+
+import static {{packageName}}.configuration.ApplicationConfig.API_VERSION_0;
+import static {{packageName}}.configuration.ApplicationConfig.API_VERSION_1;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static springfox.documentation.builders.PathSelectors.regex;
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+
+    public static final String securitySchemaOAuth2 = "OAuth2Implicit";
+    public static final String authorizationScopeGlobal = "api";
+    public static final String authorizationScopeGlobalDesc = "API Authorization Scope";
+
+    @Value("${swagger.api.name:This is Java API Starter Kit server documentation}")
+    private String apiName;
+    @Value("${swagger.api.description:Java API Starter Kit}")
+    private String apiDescription;
+    @Value("${oauth2.login-entry-point:https://www-dev.realpage.com/login/identity/connect/authorize}")
+    private String loginEntryPoint;
+
+    @Bean
+    public Docket restApiApi0() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("restapi-v0")
+                .apiInfo(apiInfo0())
+                .select()
+                .paths(PathSelectors.ant(API_VERSION_0 + "**"))
+                .build()
+                .securitySchemes(Collections.singletonList(securitySchema()))
+                .securityContexts(Collections.singletonList(securityContext()));
+    }
+
+    @Bean
+    public Docket restApiApi1() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("restapi-v1")
+                .apiInfo(apiInfo1())
+                .select()
+                .paths(PathSelectors.ant(API_VERSION_1 + "**"))
+                .build()
+                .produces(Sets.newHashSet(APPLICATION_JSON_VALUE))
+                .consumes(Sets.newHashSet(APPLICATION_JSON_VALUE))
+                .securitySchemes(Collections.singletonList(securitySchema()))
+                .securityContexts(Collections.singletonList(securityContext()));
+    }
+
+    private OAuth securitySchema() {
+        List<AuthorizationScope> authorizationScopeList = Collections.singletonList(new AuthorizationScope(authorizationScopeGlobal, authorizationScopeGlobalDesc));
+        LoginEndpoint loginEndpoint = new LoginEndpoint(loginEntryPoint);
+        GrantType grantType = new ImplicitGrant(loginEndpoint, "access_token");
+        List<GrantType> grantTypes = Collections.singletonList(grantType);
+        return new OAuth(securitySchemaOAuth2, authorizationScopeList, grantTypes);
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.regex("/((?!\\/public\\/).)*"))
+                .build();
+    }
+
+    private List<SecurityReference> defaultAuth() {
+        return Collections.singletonList(
+                new SecurityReference(
+                        securitySchemaOAuth2, new AuthorizationScope[]{
+                        new AuthorizationScope(authorizationScopeGlobal, authorizationScopeGlobalDesc)
+                })
+        );
+    }
+
+    private ApiInfo apiInfo0() {
+        return new ApiInfoBuilder()
+                .title(apiName)
+                .description(apiDescription)
+                .version("0.0")
+                .build();
+    }
+
+    private ApiInfo apiInfo1() {
+        return new ApiInfoBuilder()
+                .title(apiName)
+                .description(apiDescription)
+                .version("1.0")
+                .build();
+    }
+}

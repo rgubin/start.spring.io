@@ -1,0 +1,120 @@
+package {{packageName}}.integration.dao.impl;
+
+import {{packageName}}.api.dao.data.Company;
+import {{packageName}}.api.dao.impl.CompanyDaoImpl;
+import {{packageName}}.integration.dao.DAOTests;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.dao.EmptyResultDataAccessException;
+
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class CompanyDaoImplTestIT extends DAOTests {
+    private CompanyDaoImpl dao;
+
+    @BeforeEach
+    void init() {
+        dao = new CompanyDaoImpl(getJdbcTemplate());
+    }
+
+    @Test
+    void get_unknown_company_throws_exception() {
+        assertThrows(EmptyResultDataAccessException.class, () -> dao.getCompany(UUID.randomUUID()));
+    }
+
+    @Test
+    void upsert_company_with_id_creates_company() {
+        //given
+        UUID id = UUID.randomUUID();
+        Company company = new Company.Builder()
+                .id(id)
+                .name("n")
+                .webSite("w")
+                .companyType(0)
+                .build();
+        //when
+        Company actual = dao.upsertCompany(company);
+        //then
+        assertEquals(company.getId(), actual.getId());
+        assertEquals(company.getName(), actual.getName());
+        assertEquals(company.getWebSite(), actual.getWebSite());
+        assertEquals(company.getCompanyType(), actual.getCompanyType());
+    }
+
+    @Test
+    void upsert_company_without_id_creates_company() {
+        //given
+        Company company = new Company.Builder()
+                .name("n")
+                .webSite("w")
+                .companyType(0)
+                .build();
+        //when
+        Company actual = dao.upsertCompany(company);
+        //then
+        assertNotNull(actual.getId());
+        assertEquals(company.getName(), actual.getName());
+        assertEquals(company.getWebSite(), actual.getWebSite());
+        assertEquals(company.getCompanyType(), actual.getCompanyType());
+    }
+
+    @Test
+    void upsert_company_updates_company() {
+        //given
+        Company company = new Company.Builder()
+                .name("n")
+                .webSite("w")
+                .companyType(0)
+                .build();
+        Company existing = dao.upsertCompany(company);
+        Company updatedCompanyExpected = new Company.Builder()
+                .id(existing.getId())
+                .name("n2")
+                .webSite("w2")
+                .companyType(0)
+                .build();
+        //when
+        Company actual = dao.upsertCompany(updatedCompanyExpected);
+        //then
+        assertEquals(existing.getId(), actual.getId());
+        assertEquals(updatedCompanyExpected.getId(), actual.getId());
+        assertEquals(updatedCompanyExpected.getName(), actual.getName());
+        assertEquals(updatedCompanyExpected.getWebSite(), actual.getWebSite());
+        assertEquals(updatedCompanyExpected.getCompanyType(), actual.getCompanyType());
+    }
+
+    @Test
+    void remove_company_removes_company() {
+        //given
+        Company company = new Company.Builder()
+                .name("n")
+                .webSite("w")
+                .companyType(0)
+                .build();
+        Company exiting = dao.upsertCompany(company);
+        //when
+        dao.removeCompany(exiting.getId());
+        //then
+        assertThrows(EmptyResultDataAccessException.class, () -> dao.getCompany(exiting.getId()));
+    }
+
+    @Test
+    void get_companies_returns_list() {
+        //given
+        Company.Builder companyBuilder = new Company.Builder()
+                .webSite("w")
+                .companyType(0);
+        dao.upsertCompany(companyBuilder.name("n1").build());
+        dao.upsertCompany(companyBuilder.name("n2").build());
+        //when
+        List<Company> actual = dao.getCompanies();
+        //then
+        assertEquals(1, actual.stream().filter(c -> c.getName().equals("n1")).count());
+        assertEquals(1, actual.stream().filter(c -> c.getName().equals("n2")).count());
+    }
+}

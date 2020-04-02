@@ -1,0 +1,36 @@
+package {{packageName}}.api.dao.impl;
+
+import {{packageName}}.api.dao.CompanyDao;
+import {{packageName}}.api.dao.data.Company;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@ConditionalOnProperty(value = "use-datasource", havingValue = "false")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class CompanyDaoMockImpl implements CompanyDao {
+    @Override
+    public Company getCompany(UUID id) {
+        return null;
+    }
+
+    @Override
+    public List<Company> getCompanies() {
+        return null;
+    }
+
+    @Override
+    public void removeCompany(UUID id) {
+
+    }
+
+    @Override
+    public Company upsertCompany(Company company) {
+        return null;
+    }
+}

@@ -66,36 +66,43 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		SourceStructure mainSource = description.getBuildSystem().getMainSource(projectRoot, description.getLanguage());
 		Map<String, Object> model = resolveModel();
 
+		String projectTemplateName = "starter2"; // now it's hardcoded
+		contributeProjectTemplates(projectTemplateName, projectRoot, mainSource, model);
+	}
+
+	private void contributeProjectTemplates(String projectTemplateName, Path projectRoot, SourceStructure mainSource,
+			Map<String, Object> model) throws IOException {
 		if (Boolean.TRUE.equals(model.get("useSwagger2"))) {
 			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SwaggerConfig")
-					.toString()), "starter/src/main/java/configuration/SwaggerConfig.java", model);
+					.toString()), projectTemplateName + "/src/main/java/configuration/SwaggerConfig.java", model);
 			write(new File(
 					mainSource.createSourceFile(model.get("packageName").toString(), "HomeController").toString()),
-					"starter/src/main/java/HomeController.java", model);
+					projectTemplateName + "/src/main/java/HomeController.java", model);
 		}
 		if (Boolean.TRUE.equals(model.get("useSecurity")) && Boolean.TRUE.equals(model.get("useJwt"))) {
 			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "SecurityConfig")
-					.toString()), "starter/src/main/java/configuration/SecurityConfig.java", model);
+					.toString()), projectTemplateName + "/src/main/java/configuration/SecurityConfig.java", model);
 			write(new File(
 					mainSource.createSourceFile(model.get("packageName") + ".security", "JwtConfigurer").toString()),
-					"starter/src/main/java/security/JwtConfigurer.java", model);
+					projectTemplateName + "/src/main/java/security/JwtConfigurer.java", model);
 			write(new File(
 					mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenFilter").toString()),
-					"starter/src/main/java/security/JwtTokenFilter.java", model);
+					projectTemplateName + "/src/main/java/security/JwtTokenFilter.java", model);
 			write(new File(
 					mainSource.createSourceFile(model.get("packageName") + ".security", "JwtTokenProvider").toString()),
-					"starter/src/main/java/security/JwtTokenProvider.java", model);
+					projectTemplateName + "/src/main/java/security/JwtTokenProvider.java", model);
 			write(new File(
 					mainSource.createSourceFile(model.get("packageName") + ".security", "AppMDCFilter").toString()),
-					"starter/src/main/java/security/AppMDCFilter.java", model);
+					projectTemplateName + "/src/main/java/security/AppMDCFilter.java", model);
 		}
 		write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "ApplicationConfig")
-				.toString()), "starter/src/main/java/configuration/ApplicationConfig.java", model);
+				.toString()), projectTemplateName + "/src/main/java/configuration/ApplicationConfig.java", model);
 		try {
-			copyCommonSources("starter/src/main/java/api", mainSource, model, "starter.src.main.java");
-			copyCommonSources("starter/src/test/java",
+			copyCommonSources(projectTemplateName + "/src/main/java/api", mainSource, model,
+					projectTemplateName + ".src.main.java");
+			copyCommonSources(projectTemplateName + "/src/test/java",
 					description.getBuildSystem().getTestSource(projectRoot, description.getLanguage()), model,
-					"starter.src.test.java");
+					projectTemplateName + ".src.test.java");
 		}
 		catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -106,7 +113,7 @@ public class JavaTemplatesContributor implements ProjectContributor {
 
 		if (Boolean.TRUE.equals(model.get("useLiquibase"))) {
 			write(new File(mainSource.createSourceFile(model.get("packageName") + ".configuration", "DataSourceConfig")
-					.toString()), "starter/src/main/java/configuration/DataSourceConfig.java", model);
+					.toString()), projectTemplateName + "/src/main/java/configuration/DataSourceConfig.java", model);
 			SingleResourceProjectContributor contributorDb = new SingleResourceProjectContributor(
 					"src/main/resources/db/changelog/db.changelog-master.yaml",
 					"classpath:configuration/db.changelog-master.yaml");
@@ -122,18 +129,21 @@ public class JavaTemplatesContributor implements ProjectContributor {
 		contributorStatic.contribute(projectRoot);
 
 		write(new File(mainSource.createResourceFile("", "logback-spring.xml").toString()),
-				"starter/src/main/resources/logback-spring.xml", model);
+				projectTemplateName + "/src/main/resources/logback-spring.xml", model);
 		write(new File(mainSource.createResourceFile("", "application.yml").toString()),
-				"starter/src/main/resources/application.yml", model);
+				projectTemplateName + "/src/main/resources/application.yml", model);
 
-		write(new File(projectRoot.toString(), "README.md"), "starter/README.md", model);
+		write(new File(mainSource.createResourceFile("api", "swagger.yml").toString()),
+				projectTemplateName + "/src/main/resources/api/swagger.yml", model);
+
+		write(new File(projectRoot.toString(), "README.md"), projectTemplateName + "/README.md", model);
 
 		if (DockerPackaging.ID.equals(description.getPackaging().id())) {
-			write(new File(projectRoot.toString(), "Dockerfile"), "starter/Dockerfile", model);
+			write(new File(projectRoot.toString(), "Dockerfile"), projectTemplateName + "/Dockerfile", model);
 			File execFile = new File(projectRoot.toString(), "run.sh");
 			Files.createFile(execFile.toPath());
 			execFile.setExecutable(true);
-			write(execFile, "starter/run.sh", model);
+			write(execFile, projectTemplateName + "/run.sh", model);
 		}
 	}
 
