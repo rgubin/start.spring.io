@@ -12,6 +12,10 @@ To run local stack run first postgres database in docker
 ```
 $ ./mvnw -Ppg-docker docker:start
 ```
+Or you may use docker-compose:
+```
+$ docker-compose up
+```
 Then you may start application using your IDE or from command line:
 ```
 $ ./mvnw spring-boot:run
@@ -22,6 +26,12 @@ $ ./mvnw -Ppg-docker docker:start spring-boot:run
 ```
 
 After than you can access application using URL https://localhost:44334
+
+To stop the docker database, run:
+```
+$ ./mvnw -Ppg-docker docker:stop
+```
+Or just press Ctrl^C if you start it using docker-compose.
 
 # Run the tests
 To run unit tests type

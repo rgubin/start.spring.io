@@ -11,8 +11,9 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import static {{packageName}}.configuration.SecurityConfig.OAUTH2_AUTHORITY;
 
@@ -28,10 +29,9 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         DecodedJWT jwt = JWT.decode(token);
+        Collection<GrantedAuthority> authorities = convertAuthorities(jwt);
+        authorities.add(new SimpleGrantedAuthority(OAUTH2_AUTHORITY));
         Object principal = jwt.getClaim("personaId").asString();
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(OAUTH2_AUTHORITY);
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(authority);
         return new PreAuthenticatedAuthenticationToken(principal, null, authorities);
     }
 
@@ -53,5 +53,21 @@ public class JwtTokenProvider {
             return false;
         }
         return false;
+    }
+
+    public Collection<GrantedAuthority> convertAuthorities(DecodedJWT source) {
+        Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (String authority : getAuthorities(source)) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+        }
+        return grantedAuthorities;
+    }
+
+    private Collection<String> getAuthorities(DecodedJWT source) {
+        Object authorities = source.getClaim("auth");
+        if (authorities instanceof Collection) {
+            return (Collection<String>) authorities;
+        }
+        return Collections.emptyList();
     }
 }
