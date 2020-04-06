@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class JavaTemplatesContributor implements ProjectContributor {
 
 	private void writeText(File target, String body) {
 		try (OutputStream stream = new FileOutputStream(target)) {
-			StreamUtils.copy(body, Charset.forName("UTF-8"), stream);
+			StreamUtils.copy(body, StandardCharsets.UTF_8, stream);
 		}
 		catch (Exception e) {
 			throw new IllegalStateException("Cannot write file " + target, e);
@@ -137,13 +137,14 @@ public class JavaTemplatesContributor implements ProjectContributor {
 				projectTemplateName + "/src/main/resources/api/swagger.yml", model);
 
 		write(new File(projectRoot.toString(), "README.md"), projectTemplateName + "/README.md", model);
+		write(new File(projectRoot.toString(), "docker-compose.yml"), projectTemplateName + "/docker-compose.yml", model);
 
 		if (DockerPackaging.ID.equals(description.getPackaging().id())) {
-			write(new File(projectRoot.toString(), "Dockerfile"), projectTemplateName + "/Dockerfile", model);
+			write(new File(projectRoot.toString(), "Dockerfile"), "common/Dockerfile", model);
 			File execFile = new File(projectRoot.toString(), "run.sh");
 			Files.createFile(execFile.toPath());
 			execFile.setExecutable(true);
-			write(execFile, projectTemplateName + "/run.sh", model);
+			write(execFile, "common/run.sh", model);
 		}
 	}
 

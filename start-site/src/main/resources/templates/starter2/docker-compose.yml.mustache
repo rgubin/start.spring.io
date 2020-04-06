@@ -1,0 +1,14 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:10
+    environment:
+      - POSTGRES_DB={{name}}-db
+      - POSTGRES_USER=porta
+      - POSTGRES_PASSWORD=porta
+    volumes:
+    - postgres-data:/var/lib/postgresql
+    ports:
+      - 5432:5432
+volumes:
+  postgres-data:

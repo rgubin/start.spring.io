@@ -23,6 +23,10 @@ To run local stack run first postgres database in docker
 ```
 $ ./mvnw -Ppg-docker docker:start
 ```
+Or you may use docker-compose:
+```
+$ docker-compose up
+```
 Then you may start application using your IDE or from command line:
 ```
 $ ./mvnw spring-boot:run
@@ -38,6 +42,8 @@ To stop the docker database, run:
 ```
 $ ./mvnw -Ppg-docker docker:stop
 ```
+Or just press Ctrl^C if you start it using docker-compose.
+
 ### Mock DataSource
 To run application without real DataSource connection use `-Duse-datasource=false` VM argument.
 In case of using maven with spring boot use this form:
